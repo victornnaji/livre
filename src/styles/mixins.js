@@ -1,4 +1,4 @@
-import { media } from ".";
+import { media } from "./media";
 const { css } = require("styled-components");
 
 const mixins = {
@@ -12,6 +12,11 @@ const mixins = {
         margin: 0 auto;
         ${media.tablet`width: 90%`}
     `,
+    flexCenter: css`
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    `
 }
 
 export default mixins;
