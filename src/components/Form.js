@@ -4,17 +4,26 @@ import * as Yup from 'yup';
 import styled from 'styled-components'
 import { media, theme } from 'styles';
 import { motion } from "framer-motion"
+import { StyledButton } from './Button';
 
-const transition = { duration: .5, ease: [0.43, 0.13, 0.23, 0.96] };
+const transition = { duration: .9, ease: [0.43, 0.13, 0.23, 0.96] };
 const buttonVariants = {
-    initial: { scale: 0.5, opacity: 0 },
-    exit: { scale: 0.5, y: "50%", opacity: 0, transition: { duration: 1.5, ...transition } },
+    initial: { y: 70, opacity: 0 },
+    exit: { 
+        y: 50,
+        opacity: 0,
+        transition: {
+            y: { stiffness: 1000 , ...transition}
+        }
+     },
     enter: {
-        y: "0%",
-        scale: 1,
+        y: 0,
         opacity: 1,
-        transition
+        transition: {
+            y: { stiffness: 1000, velocity: -100, ...transition }
+        }
     }
+    
 };
 
 const SignupSchema = Yup.object().shape({
@@ -27,43 +36,61 @@ const SignupSchema = Yup.object().shape({
   });
 const AuthForm = ({onSubmit, buttonText}) => {
     return (
-        <Formik
-            initialValues={{
-                username: '',
-                password: '',
-            }}
-            validationSchema={SignupSchema}
-            onSubmit={values => {
-                // same shape as initial values
-                onSubmit(values);
-            }}
-        >
+      <Formik
+        initialValues={{
+          username: "",
+          password: "",
+        }}
+        validationSchema={SignupSchema}
+        onSubmit={(values) => {
+          // same shape as initial values
+          onSubmit(values);
+        }}
+      >
         {({ errors, touched }) => (
-         <StyledFormikForm>
-           <motion.div 
-            initial="initial"
-            animate="enter"
-            exit="exit"
-            variants={{ exit: { transition: { staggerChildren: 0.1 } } }}
-           >
-            <motion.div variants={buttonVariants}><StyledFormikField name="username"/></motion.div>
-            {errors.username && touched.username ? (
+          <StyledFormikForm>
+            <motion.div
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={{
+                exit: {
+                  transition: { staggerChildren: 1.05, staggerDirection: -1 },
+                },
+                enter: {
+                  transition: { staggerChildren: 0.07, delayChildren: 0.5 },
+                },
+              }}
+            >
+              <motion.div variants={buttonVariants}>
+                <StyledFormikField name="username" />
+              </motion.div>
+              {errors.username && touched.username ? (
                 <div className="field-error">{errors.username}</div>
-            ) : null}
-            <motion.div variants={buttonVariants}>
-                <StyledFormikField name="password" type="password" className="password"/>
-            </motion.div>
-            {errors.password && touched.password ? (
+              ) : null}
+              <motion.div variants={buttonVariants}>
+                <StyledFormikField
+                  name="password"
+                  type="password"
+                  className="password"
+                />
+              </motion.div>
+              {errors.password && touched.password ? (
                 <div className="field-error">{errors.password}</div>
-            ) : null}
-            <motion.div variants={buttonVariants} className="button-container">
-                <StyledFormikButton type="submit">{buttonText}</StyledFormikButton>
+              ) : null}
+              <motion.div
+                variants={buttonVariants}
+                className="button-container"
+              >
+                <StyledButton type="submit">
+                  {buttonText}
+                </StyledButton>
+              </motion.div>
             </motion.div>
-           </motion.div>
-         </StyledFormikForm>
-       )}
-     </Formik>
-    )
+          </StyledFormikForm>
+        )}
+      </Formik>
+    );
 }
 
 const StyledFormikForm = styled(Form)`
@@ -76,6 +103,7 @@ const StyledFormikForm = styled(Form)`
 
     .button-container{
         width: 100%;
+        margin-top: 2rem;
     }
 
     .field-error{
@@ -105,20 +133,5 @@ const StyledFormikField = styled(Field)`
     padding: 1.5rem;
   `}
 `;
-
-const StyledFormikButton = styled.button`
-    padding: 1.5rem 5rem;
-    border-radius: 4px;
-    background-color: ${theme.colors.primary};
-    font-size: 1.6rem;
-    font-weight: 500;
-    border: none;
-    color: #fff;
-    font-family: ${theme.fonts.Nunito};
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 2rem;
-    width: 100%;
-`
 
 export default AuthForm

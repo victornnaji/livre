@@ -1,12 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Discover from 'Discover';
+
+const {worker} = require('./test/server');
+worker.start();
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <App /> */}
+    <Discover />
   </React.StrictMode>,
   document.getElementById('root')
 );
