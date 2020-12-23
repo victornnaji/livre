@@ -3,20 +3,26 @@ import Logo from 'assets/Logo';
 import AuthForm from 'components/Form';
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   return (
     <StyledApp>
       <div className="page-logo"><Logo /></div>
       <AuthContainer>
-        <div className="Text-container">
-          <RegisterContainer>
-            <AuthForm buttonText="Get Started"/>
-          </RegisterContainer>
-        </div>
+
+          <div className="Text-container">
+            <AnimatePresence exitBeforeEnter initial={true}>
+                <RegisterContainer>
+                  <AuthForm buttonText="Get Started"/>
+                </RegisterContainer>
+            </AnimatePresence>
+          </div>
+
         <div className="Doddle-container">
           <AuthDoddle />
         </div>
+
       </AuthContainer>
     </StyledApp>
   );
