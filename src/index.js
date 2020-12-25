@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 // import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Discover from 'Discover';
+import Main from 'Main';
 
 const {worker} = require('./test/server');
 worker.start();
@@ -12,7 +12,7 @@ worker.start();
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
-    <Discover />
+    <Main />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,7 +1,7 @@
 import HeroDoddle from 'assets/HeroDoddle'
 import React from 'react'
 import styled from 'styled-components'
-import { mixin, theme } from 'styles'
+import { media, mixin, theme } from 'styles'
 import {motion} from "framer-motion"
 
 const imagevariant = {
@@ -42,7 +42,8 @@ const Hero = () => {
 
           <div className="text-doddle-area">
             <motion.div variants={theme.variants} className="text">
-              Find Books that Don't suck
+              Find Books 
+              <div>that <span className="text-underline">Don't suck</span></div>
             </motion.div>
 
             <motion.div variants={imagevariant} className="doddle">
@@ -69,10 +70,12 @@ const StyledHero = styled.div`
         .doddle{
             width: 30%;
             height: 100%;
+
+            ${media.phablet`display: none`}
         }
 
         .text{
-            font-size: 3.5rem;
+            font-size: 7rem;
             font-weight: 700;
         }
    }

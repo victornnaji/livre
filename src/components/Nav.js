@@ -5,7 +5,7 @@ import { media, mixin, theme } from 'styles'
 import {motion} from 'framer-motion'
 import { StyledButton } from './Button'
 
-const parentVariants = {
+export const parentVariants = {
     exit: {
       transition: { staggerChildren: 1.05, staggerDirection: -1 },
     },
@@ -46,12 +46,17 @@ const Nav = () => {
 
 const StyledNavBar = styled.nav`
     height: 7rem;
-    margin-top: 1rem;
+    background-color: ${theme.colors.primary};
+    color: #fff;
 
     .nav-contents{
         height: 100%;
         ${mixin.flexBetween}
         ${mixin.container}
+
+        .logo{
+            fill: #fff;
+        }
     }
 
     .user{
@@ -76,6 +81,13 @@ const StyledNavBar = styled.nav`
     }
 `
 const NavStyledButton = styled(StyledButton)`
+    padding: 1.2rem 4rem;
     ${media.phablet`padding: 1rem 2.5rem; font-size: 1.4rem`}
+    color: ${theme.colors.primary};
+    background-color: ${theme.colors.tertiary};
+
+    &:hover{
+       background-color: ${theme.colors.darkTertiary};
+    }
 `
 export default Nav

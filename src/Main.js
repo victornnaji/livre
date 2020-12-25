@@ -2,22 +2,27 @@ import React from 'react'
 import styled from 'styled-components';
 import { AnimatePresence } from "framer-motion";
 import Nav from 'components/Nav';
-import Hero from 'components/Hero';
+import SubNav from 'components/SubNav';
+import { media, mixin } from 'styles';
 
-const Discover = () => {
+const Main= () => {
 
     return (
         <AnimatePresence exitBeforeEnter initial={true}>
-            <DiscoverBookContainer>
                 <Nav/>
-                <Hero />
+                <SubNav />
+            <DiscoverBookContainer>
+                hello
             </DiscoverBookContainer>
         </AnimatePresence>
     )
 }
 
 const DiscoverBookContainer = styled.div`
+    ${mixin.container};
+    padding: 6rem 0;
 
+    ${media.phone`padding: 4rem 0`}
 `
 
-export default Discover
+export default Main
