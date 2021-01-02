@@ -37,11 +37,24 @@ const SubNav = () => {
     )
 }
 
-const MenuItems = ({title, link, active}) => (
-    <StyledMenuItem className={active ? 'active-menu': null}>
+const MenuItems = ({title, link, active}) => {
+    function handleMouseleave(el) {
+      el.currentTarget.classList.add("animate-out");
+    }
+
+    function handleTransEnd(el) {
+      el.currentTarget.classList.remove("animate-out");
+    }
+
+    return (
+      <StyledMenuItem
+        onMouseLeave={handleMouseleave}
+        onTransitionEnd={handleTransEnd}
+      >
         <motion.span variants={theme.variants}>{title}</motion.span>
-    </StyledMenuItem>
-)
+      </StyledMenuItem>
+    );
+}
 
 const StyledMenuItem = styled.a`
     font-size: 1.5rem;
@@ -74,7 +87,7 @@ const StyledMenuItem = styled.a`
         transform: translateX(0);
     }
 
-    .active-menu::after{
+    &.animate-out::after{
         transition: transform 0.3s ${theme.easing};
         transform: translateX(100%);
     }
@@ -94,6 +107,10 @@ const StyledSubNav = styled.div`
     border-top: 1px solid ${theme.colors.primary};
     box-shadow: rgba(0, 0, 0, 0.03) 0px 9px 9px;
     border-bottom: 0.5px solid rgba(25, 39, 45, 0.1);
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 30;
     
     .nav-content{
         ${mixin.flexCenter};

@@ -4,15 +4,16 @@ import { AnimatePresence } from "framer-motion";
 import Nav from 'components/Nav';
 import SubNav from 'components/SubNav';
 import { media, mixin } from 'styles';
+import Discover from 'Pages/Discover';
 
 const Main= () => {
-
+    
     return (
         <AnimatePresence exitBeforeEnter initial={true}>
-                <Nav/>
-                <SubNav />
+            <Nav key="nav"/>
+            <SubNav key="subnav"/>
             <DiscoverBookContainer>
-                hello
+                <Discover key="ahshs"/>
             </DiscoverBookContainer>
         </AnimatePresence>
     )
@@ -20,7 +21,7 @@ const Main= () => {
 
 const DiscoverBookContainer = styled.div`
     ${mixin.container};
-    padding: 6rem 0;
+    padding: 5rem 0;
 
     ${media.phone`padding: 4rem 0`}
 `
