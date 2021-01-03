@@ -34,8 +34,9 @@ const SignupSchema = Yup.object().shape({
     password: Yup.string()
       .required('Required')
   });
-const AuthForm = ({onSubmit, buttonText}) => {
+const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
     return (
+      <>
       <Formik
         initialValues={{
           username: "",
@@ -58,10 +59,11 @@ const AuthForm = ({onSubmit, buttonText}) => {
                   transition: { staggerChildren: 1.05, staggerDirection: -1 },
                 },
                 enter: {
-                  transition: { staggerChildren: 0.07, delayChildren: 0.5 },
+                  transition: { staggerChildren: 0.07, delayChildren: 0.5},
                 },
               }}
             >
+              <motion.h2 variants={buttonVariants} className="auth-heading">{register ? "Sign up" : "Log in"}</motion.h2>
               <motion.div variants={buttonVariants}>
                 <StyledFormikField name="username" />
               </motion.div>
@@ -86,10 +88,12 @@ const AuthForm = ({onSubmit, buttonText}) => {
                   {buttonText}
                 </StyledButton>
               </motion.div>
+              <motion.div variants={buttonVariants} className="auth-redirect">{register ? (<p>Already a user? <span onClick={registerClick}>Login now</span></p>): (<span onClick={registerClick}>Register instead</span>)}</motion.div>
             </motion.div>
           </StyledFormikForm>
         )}
       </Formik>
+      </>
     );
 }
 
@@ -112,6 +116,20 @@ const StyledFormikForm = styled(Form)`
         font-family: ${theme.fonts.Nunito};
         color: ${theme.colors.secondary};
         font-weight: 700;
+    }
+
+    .auth-heading{
+      margin-bottom: 3rem;
+      font-size: 2.5rem;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .auth-redirect{
+      margin-top: 2rem;
+      font-size: 1.8rem;
+      text-align: right;
     }
 `;
 
