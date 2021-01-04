@@ -7,6 +7,7 @@ import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
 import { useAsync } from 'hooks/use-async';
 import Times from 'assets/Times';
+import Loading from 'components/Loading';
 
 
 const variants = {
@@ -23,20 +24,25 @@ const variants = {
 }
 
 const Discover = () => {
-    const [query, setQuery] = React.useState('')
+    const [query, setQuery] = React.useState("")
     const [queried, setQueried] = React.useState(false)
     const {data, error, run, isLoading, isError, isSuccess, isIdle} = useAsync()
 
+    
+    React.useEffect(() => {
+        if (!queried) {
+            return
+        }
+        run(client(`books?query=${encodeURIComponent(query)}`))
+    }, [query, queried, run])
+    
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         setQueried(true);
         setQuery(e.target.search.value);
     }
 
-    React.useEffect(() => {
-        if(!queried) return;
-        run(client(`books?query=${encodeURIComponent(query)}`));
-    }, [queried, query, run]);
+    console.log(data);
 
     return (
         <StyledDiscover>
@@ -61,7 +67,7 @@ const Discover = () => {
             ) : null}
 
             {isLoading ? (
-                <div>loading....</div>
+                <div><Loading/></div>
             ): <DiscoverScreen data={data} isSuccess={isSuccess} isIdle={isIdle}/>}
 
         </StyledDiscover>

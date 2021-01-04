@@ -15,7 +15,7 @@ export const parentVariants = {
 }
 
 
-const Nav = () => {
+const Nav = ({logout, user}) => {
     return (
       <StyledNavBar>
         <motion.div
@@ -34,9 +34,9 @@ const Nav = () => {
           animate="enter"
           exit="exit"
           className="user" variants={parentVariants}>
-                <motion.div className="username" variants={theme.variants}>Victor Nnaji</motion.div>
+                <motion.div className="username" variants={theme.variants}>{user.username}</motion.div>
                 <motion.div className="logout-btn" variants={theme.variants}>
-                    <NavStyledButton>Logout</NavStyledButton>
+                    <NavStyledButton onClick={logout}>Logout</NavStyledButton>
                 </motion.div>
           </motion.div>
         </motion.div>

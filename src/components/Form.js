@@ -2,9 +2,11 @@ import React from 'react'
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components'
-import { media, theme } from 'styles';
+import { media, mixin, theme } from 'styles';
 import { motion } from "framer-motion"
 import { StyledButton } from './Button';
+import { useAsync } from 'hooks/use-async';
+import Spinner from 'assets/Spinner';
 
 const transition = { duration: .9, ease: [0.43, 0.13, 0.23, 0.96] };
 const buttonVariants = {
@@ -35,8 +37,10 @@ const SignupSchema = Yup.object().shape({
       .required('Required')
   });
 const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
+
+    const {isLoading, isError, error, run} = useAsync()
+
     return (
-      <>
       <Formik
         initialValues={{
           username: "",
@@ -45,7 +49,7 @@ const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
         validationSchema={SignupSchema}
         onSubmit={(values) => {
           // same shape as initial values
-          onSubmit(values);
+          run(onSubmit(values));
         }}
       >
         {({ errors, touched }) => (
@@ -84,16 +88,18 @@ const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
                 variants={buttonVariants}
                 className="button-container"
               >
-                <StyledButton type="submit">
-                  {buttonText}
+                <StyledButton type="submit" disabled={errors.password || errors.username} className="auth-btn">
+                  {buttonText} {isLoading ? (<span><Spinner /></span>) : null}
                 </StyledButton>
               </motion.div>
-              <motion.div variants={buttonVariants} className="auth-redirect">{register ? (<p>Already a user? <span onClick={registerClick}>Login now</span></p>): (<span onClick={registerClick}>Register instead</span>)}</motion.div>
+              {isError ? (
+                <div style={{fontSize: '1.4rem'}} className="field-error">{error.message}</div>
+              ) : null}
+              <motion.div variants={buttonVariants} className="auth-redirect">{register ? (<p>Already a user? <span onClick={registerClick}>Login now</span></p>): (<p>don't have an account? <span onClick={registerClick}>join now.</span></p>)}</motion.div>
             </motion.div>
           </StyledFormikForm>
         )}
       </Formik>
-      </>
     );
 }
 
@@ -108,6 +114,15 @@ const StyledFormikForm = styled(Form)`
     .button-container{
         width: 100%;
         margin-top: 2rem;
+
+        .auth-btn{
+          ${mixin.flexCenter}
+
+          span{
+            margin-left: 1rem;
+            transform: translateY(.3rem)
+          }
+        }
     }
 
     .field-error{
@@ -130,6 +145,13 @@ const StyledFormikForm = styled(Form)`
       margin-top: 2rem;
       font-size: 1.8rem;
       text-align: right;
+
+      span{
+        color: ${theme.colors.tertiary};
+        cursor: pointer;
+        font-weight: 700;
+        text-transform: capitalize;
+      }
     }
 `;
 
