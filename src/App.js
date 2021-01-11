@@ -39,7 +39,10 @@ const App = () => {
     if(isSuccess){
         const login = form => auth.login(form).then(u => setData(u))
         const register = form => auth.register(form).then(u => setData(u));
-        const logout = () => auth.logout().then(setData(null));
+        const logout = () => {
+            auth.logout()
+            setData(null)
+        }
     
         return user ? <AuthenticatedApp  user={user} logout={logout}/> : <UnAuthenticatedApp login={login} register={register}/>
     }

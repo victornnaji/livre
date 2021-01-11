@@ -9,7 +9,7 @@ function client(
     method: data ? 'POST' : 'GET',
     body: data ? JSON.stringify(data) : undefined,
     headers: {
-      Authorization: token ? `Bearer ${token}` : undefined,
+      Authorization: token ? `Bearer ${token}` : "",
       'Content-Type': data ? 'application/json' : undefined,
       ...customHeaders,
     },
@@ -17,12 +17,12 @@ function client(
   }
 
   return window.fetch(`${apiURL}/${endpoint}`, config).then(async response => {
-    // if (response.status === 401) {
-    //   await auth.logout()
-    //   // refresh the page for them
-    //   window.location.assign(window.location)
-    //   return Promise.reject({message: 'Please re-authenticate.'})
-    // }
+    if (response.status === 401) {
+      await auth.logout()
+      // refresh the page for them
+      window.location.assign(window.location)
+      return Promise.reject({message: 'Please re-authenticate.'})
+    }
     const data = await response.json()
     if (response.ok) {
       return data

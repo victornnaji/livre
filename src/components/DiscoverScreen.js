@@ -4,8 +4,10 @@ import {motion} from 'framer-motion';
 import BookRow from './BookRow';
 import TopPicks from './TopPicks';
 import { media } from 'styles';
+import Loading from './Loading';
+import InitialBookScreen from './InitialBookScreen';
 
-const DiscoverScreen = ({data, isSuccess, isIdle}) => {
+const DiscoverScreen = ({data, isSuccess, isIdle, isLoading, isError, error}) => {
     return (
       <StyledDiscoverScreen>
         <motion.div
@@ -33,11 +35,18 @@ const DiscoverScreen = ({data, isSuccess, isIdle}) => {
             },
           }}
         >
-          {isIdle && <BookSearchResult><div>Books on screen initially</div></BookSearchResult>}
+          {isLoading ? <BookSearchResult><Loading /></BookSearchResult> : null}
+          {isIdle && <BookSearchResult><InitialBookScreen /></BookSearchResult>}
+          {isError ? (
+                <div className="error-message">
+                    <p>There was an error:</p>
+                    <pre>{error.message}</pre>
+                </div>
+            ) : null}
           {isSuccess ? data?.books?.length ? (
           <BookSearchResult>
             {data.books.map(book => (
-                <div className="x" key={book.id}><BookRow book={book} /></div>
+                <div className={`x ${data.books.length < 3 ? "two-books": null}`} key={book.id}><BookRow book={book} /></div>
             ))}
           </BookSearchResult>
           ) : (<div>no books found</div>) : null}
@@ -55,8 +64,9 @@ const StyledDiscoverScreen = styled.div`
         display: grid;
         grid-template-columns: 2.5fr 1fr;
         column-gap: 2rem;
+        position: relative;
 
-        ${media.phablet`grid-template-columns: 1fr;`}
+        ${media.phablet`grid-template-columns: 1fr; row-gap: 5rem;`}
     }
 
 `;
@@ -67,6 +77,7 @@ const BookSearchResult = styled.div`
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
+    position: relative;
 
     .x{
         width: 50%;
@@ -94,17 +105,15 @@ const BookSearchResult = styled.div`
             background-color: #f0faf9;
         }
 
-        &:only-child{
-            align-self: flex-start;
+        &.two-books{
+            height: 22rem !important;
         }
     }
 
-    ${media.phablet`flex-direction: column`}
+    ${media.phablet`flex-direction: column; min-height: 5rem;`}
 `;
 
 const TopPickResult = styled.div`
-    background: brown;
-    height: 500px;
 `;
 
 export default DiscoverScreen

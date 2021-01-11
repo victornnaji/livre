@@ -7,8 +7,6 @@ import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
 import { useAsync } from 'hooks/use-async';
 import Times from 'assets/Times';
-import Loading from 'components/Loading';
-
 
 const variants = {
     initial: {y: -7, opacity: 0},
@@ -42,8 +40,6 @@ const Discover = () => {
         setQuery(e.target.search.value);
     }
 
-    console.log(data);
-
     return (
         <StyledDiscover>
             <motion.div className="search-form" variants={variants} initial="initial"
@@ -59,17 +55,7 @@ const Discover = () => {
                 </form>
             </motion.div>
 
-            {isError ? (
-                <div className="error-message">
-                    <p>There was an error:</p>
-                    <pre>{error.message}</pre>
-                </div>
-            ) : null}
-
-            {isLoading ? (
-                <div><Loading/></div>
-            ): <DiscoverScreen data={data} isSuccess={isSuccess} isIdle={isIdle}/>}
-
+            <DiscoverScreen data={data} error={error} isSuccess={isSuccess} isIdle={isIdle} isLoading={isLoading} isError ={isError }/>
         </StyledDiscover>
     )
 }

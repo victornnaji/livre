@@ -18,7 +18,7 @@ const loaderAnim = keyframes`
 const StyledLoading = styled.div`
     &::after,&::before{
         content: '';
-        position: fixed;
+        position: absolute;
         z-index: 1000;
     }
 
