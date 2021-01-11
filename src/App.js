@@ -1,72 +1,52 @@
-import AuthDoddle from 'assets/AuthDoddle';
-import Logo from 'assets/Logo';
-import AuthForm from 'components/Form';
-import styled from 'styled-components';
-import { media, mixin, theme } from 'styles';
-import { AnimatePresence } from "framer-motion";
+import React from 'react'
+import AuthenticatedApp from './AuthenticatedApp'
+import UnAuthenticatedApp from './UnAuthenticatedApp'
+import * as auth from '_helpers/auth_provider'
+import { useAsync } from 'hooks/use-async'
+import getUser from '_helpers/get-user'
+import Loading from 'components/Loading'
 
-function App() {
-  return (
-    <StyledApp>
-      <div className="page-logo"><Logo /></div>
-      <AuthContainer>
+const App = () => {
 
-          <div className="Text-container">
-            <AnimatePresence exitBeforeEnter initial={true}>
-                <RegisterContainer>
-                  <AuthForm buttonText="Get Started"/>
-                </RegisterContainer>
-            </AnimatePresence>
+    const {
+        data: user,
+        error,
+        isLoading,
+        isIdle,
+        isError,
+        isSuccess,
+        run,
+        setData,
+      } = useAsync()
+
+    React.useEffect(() => {
+        run(getUser());
+    }, [run]);
+
+    if (isLoading || isIdle) {
+        return <Loading />
+    }
+
+    if (isError) {
+        return (
+          <div>
+            <p>Uh oh... There's a problem. Try refreshing the app.</p>
+            <pre>{error.message}</pre>
           </div>
+        )
+      }
 
-        <div className="Doddle-container">
-          <AuthDoddle />
-        </div>
+    if(isSuccess){
+        const login = form => auth.login(form).then(u => setData(u))
+        const register = form => auth.register(form).then(u => setData(u));
+        const logout = () => {
+            auth.logout()
+            setData(null)
+        }
+    
+        return user ? <AuthenticatedApp  user={user} logout={logout}/> : <UnAuthenticatedApp login={login} register={register}/>
+    }
 
-      </AuthContainer>
-    </StyledApp>
-  );
 }
 
-const StyledApp = styled.div`
-  font-family: ${theme.fonts.Nunito};
-  position: relative;
-
-  .page-logo{
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-  }
-`
-
-const AuthContainer = styled.div`
-  ${mixin.flexBetween};
-  height: 100vh;
-  ${media.phablet`justify-content: center;`}
-
-  .Doddle-container{
-    width: 50%;
-    height: 100%;
-    ${mixin.flexCenter};
-    background-color: ${theme.colors.tertiary};
-
-    & svg{
-      height: 100%;
-    }
-    ${media.phablet`display: none`}
-  }
-
-  .Text-container{
-    width: 50%;
-    ${media.phablet`width: 100%`}
-  }
-`;
-
-const RegisterContainer = styled.div`
-  width: 60%;
-  margin: 0 auto;
-
-  ${media.phone`width: 90%`}
-`;
-
-export default App;
+export default App

@@ -6,14 +6,14 @@ import SubNav from 'components/SubNav';
 import { media, mixin } from 'styles';
 import Discover from 'Pages/Discover';
 
-const Main= () => {
+const AuthenticatedApp= ({logout, user}) => {
     
     return (
         <AnimatePresence exitBeforeEnter initial={true}>
-            <Nav key="nav"/>
+            <Nav key="nav" logout={logout} user={user}/>
             <SubNav key="subnav"/>
             <DiscoverBookContainer>
-                <Discover key="ahshs"/>
+                <Discover key="discover-key"/>
             </DiscoverBookContainer>
         </AnimatePresence>
     )
@@ -26,4 +26,4 @@ const DiscoverBookContainer = styled.div`
     ${media.phone`padding: 4rem 0`}
 `
 
-export default Main
+export default AuthenticatedApp
