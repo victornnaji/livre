@@ -21,7 +21,7 @@ const variants = {
     },
 }
 
-const Discover = () => {
+const Discover = ({user}) => {
     const [query, setQuery] = React.useState("")
     const [queried, setQueried] = React.useState(false)
     const {data, error, run, isLoading, isError, isSuccess, isIdle} = useAsync()
@@ -31,8 +31,8 @@ const Discover = () => {
         if (!queried) {
             return
         }
-        run(client(`books?query=${encodeURIComponent(query)}`))
-    }, [query, queried, run])
+        run(client(`books?query=${encodeURIComponent(query)}`, {token: user.token}))
+    }, [query, queried, run, user.token])
     
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -55,7 +55,7 @@ const Discover = () => {
                 </form>
             </motion.div>
 
-            <DiscoverScreen data={data} error={error} isSuccess={isSuccess} isIdle={isIdle} isLoading={isLoading} isError ={isError }/>
+            <DiscoverScreen user={user} data={data} error={error} isSuccess={isSuccess} isIdle={isIdle} isLoading={isLoading} isError ={isError }/>
         </StyledDiscover>
     )
 }

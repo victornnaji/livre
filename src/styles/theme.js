@@ -4,6 +4,7 @@ const theme = {
         secondary: '#ff6161',
         tertiary : '#8BD7C1',
         darkTertiary: '#56c4a4',
+        grey: '#F4F4F3',
     },
     fonts: {
         Nunito : 'Nunito, sans-serif',

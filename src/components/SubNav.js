@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { media, mixin, theme } from 'styles';
 import {motion} from 'framer-motion';
 import {parentVariants} from './Nav'
+import {NavLink} from 'react-router-dom';
 
 
 
@@ -30,14 +31,14 @@ const SubNav = () => {
             animate="enter"
             exit="exit" variants={parentVariants}>
                 {subMenus && subMenus.map((menuItem, index) => (
-                    <MenuItems key={menuItem.link+index} title={menuItem.title} link={menuItem.link} active={index === 0 ? 'active' : null}/>
+                    <MenuItems key={menuItem.link+index} title={menuItem.title} link={menuItem.link}/>
                 ))}
             </motion.div>
         </StyledSubNav>
     )
 }
 
-const MenuItems = ({title, link, active}) => {
+const MenuItems = ({title, link}) => {
     function handleMouseleave(el) {
       el.currentTarget.classList.add("animate-out");
     }
@@ -50,16 +51,19 @@ const MenuItems = ({title, link, active}) => {
       <StyledMenuItem
         onMouseLeave={handleMouseleave}
         onTransitionEnd={handleTransEnd}
+        to={`/${link}`}
       >
         <motion.span variants={theme.variants}>{title}</motion.span>
       </StyledMenuItem>
     );
 }
 
-const StyledMenuItem = styled.a`
+const StyledMenuItem = styled(NavLink)`
     font-size: 1.5rem;
     list-style: none;
     margin-right: 2.2rem;
+    text-decoration: none;
+    color: ${theme.colors.primary};
     cursor: pointer;
     letter-spacing: 0.5px;
     line-height: 2.2rem;
@@ -92,8 +96,9 @@ const StyledMenuItem = styled.a`
         transform: translateX(100%);
     }
 
-    /* border-bottom: ${props => props.active ? `3px solid ${theme.colors.primary}` : null}; */
-
+    &.active::after{
+        transform: translateX(0);
+    }
 
     &:first-child{
         padding-left: 0;

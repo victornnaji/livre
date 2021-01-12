@@ -5,6 +5,7 @@ import * as auth from '_helpers/auth_provider'
 import { useAsync } from 'hooks/use-async'
 import getUser from '_helpers/get-user'
 import Loading from 'components/Loading'
+import {BrowserRouter as Router} from 'react-router-dom';
 
 const App = () => {
 
@@ -44,7 +45,11 @@ const App = () => {
             setData(null)
         }
     
-        return user ? <AuthenticatedApp  user={user} logout={logout}/> : <UnAuthenticatedApp login={login} register={register}/>
+        return user ? (
+          <Router>
+            <AuthenticatedApp  user={user} logout={logout}/>
+          </Router>
+        ) : <UnAuthenticatedApp login={login} register={register}/>
     }
 
 }

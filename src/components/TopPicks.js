@@ -4,13 +4,14 @@ import styled from 'styled-components'
 import { theme } from 'styles';
 import { client } from '_helpers/client';
 import Loading from './Loading';
+import {Link} from 'react-router-dom';
 
-const TopPicks = () => {
+const TopPicks = ({user}) => {
     const {run, data, isError, isLoading, isIdle, isSuccess} = useAsync();
 
     React.useEffect(() => {
-        run(client('books?query='))
-    }, [run])
+        run(client(`books?query=`, {token: user.token}))
+    }, [run, user.token])
 
     const randBook = Math.floor(Math.random() * 10);
     const book = data?.books[randBook];
@@ -19,7 +20,9 @@ const TopPicks = () => {
         <StyledToPicks>
             {isIdle || isLoading ? (<Loading />): null}
             {isSuccess ? (
-                <StyledTopPickBook href="">
+                <StyledTopPickBook 
+                aria-labelledby={book.id}
+                to={`/book/${book.id}`}>
                     <div className="topPick-heading">Top Pick</div>
                     <div className="image-column">
                         <img src={book.coverImageUrl} alt=""/>
@@ -39,16 +42,19 @@ const TopPicksMemo = React.memo(TopPicks);
 
 const StyledToPicks = styled.div`
     height: 500px;
-    /* position: relative; */
     position: sticky;
     top: 6rem;
 `;
 
-const StyledTopPickBook = styled.a`
+const StyledTopPickBook = styled(Link)`
     display: block;
-    background: ${theme.colors.tertiary};
+    background: ${theme.colors.grey};
     text-decoration: none;
     color: ${theme.colors.primary};
+
+    &:hover{
+        background: ${theme.colors.tertiary};
+    }
 
     .topPick-heading{
         font-size: 3rem;

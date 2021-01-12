@@ -4,12 +4,12 @@ import { client } from '_helpers/client';
 import BookRow from './BookRow';
 import Loading from './Loading';
 
-const InitialBookScreen = () => {
+const InitialBookScreen = ({user}) => {
     const {run, data, isError, isLoading, isIdle, isSuccess} = useAsync();
 
     React.useEffect(() => {
-        run(client('books?query='));
-    }, [run])
+        run(client(`books?query=`, {token: user.token}))
+    }, [run, user.token])
 
     return (
         <>
