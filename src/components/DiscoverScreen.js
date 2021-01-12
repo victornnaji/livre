@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import {motion} from 'framer-motion';
 import BookRow from './BookRow';
 import TopPicks from './TopPicks';
-import { media } from 'styles';
+import { media, theme } from 'styles';
 import Loading from './Loading';
 import InitialBookScreen from './InitialBookScreen';
 
-const DiscoverScreen = ({data, isSuccess, isIdle, isLoading, isError, error}) => {
+const DiscoverScreen = ({data, isSuccess, isIdle, isLoading, isError, error, user}) => {
     return (
       <StyledDiscoverScreen>
         <motion.div
@@ -36,7 +36,7 @@ const DiscoverScreen = ({data, isSuccess, isIdle, isLoading, isError, error}) =>
           }}
         >
           {isLoading ? <BookSearchResult><Loading /></BookSearchResult> : null}
-          {isIdle && <BookSearchResult><InitialBookScreen /></BookSearchResult>}
+          {isIdle && <BookSearchResult><InitialBookScreen user={user}/></BookSearchResult>}
           {isError ? (
                 <div className="error-message">
                     <p>There was an error:</p>
@@ -51,7 +51,7 @@ const DiscoverScreen = ({data, isSuccess, isIdle, isLoading, isError, error}) =>
           </BookSearchResult>
           ) : (<div>no books found</div>) : null}
           <TopPickResult>
-            <TopPicks />
+            <TopPicks user={user}/>
           </TopPickResult>
         </motion.div>
       </StyledDiscoverScreen>
@@ -74,37 +74,20 @@ const StyledDiscoverScreen = styled.div`
 
 const BookSearchResult = styled.div`   
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
     position: relative;
 
     .x{
-        width: 50%;
+        width: 49.5%;
         ${media.phablet`width: 100%; `}
         ${media.tablet`min-height: 250px`};
         ${media.phone`min-height: 220px`};
-
-        &:nth-child(1n){
-            background-color: #FBC164;
-        }
-        &:nth-child(2n + 1){
-            background-color: #F1CECD;
-        }
-
-        &:nth-child(3n + 1){
-            background-color: #ECE7E9;
-        }
-        &:nth-child(4n + 1){
-            background-color: #D0E3E8;
-        }
-        &:nth-child(5n){
-            background-color: #ffebf5;
-        }
-        &:nth-child(6n){
-            background-color: #f0faf9;
-        }
-
+        margin-bottom: .7rem;
+        background-color: ${theme.colors.grey};
+        
         &.two-books{
             height: 22rem !important;
         }

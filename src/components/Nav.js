@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { media, mixin, theme } from 'styles'
 import {motion} from 'framer-motion'
 import { StyledButton } from './Button'
+import { Link } from 'react-router-dom'
 
 export const parentVariants = {
     exit: {
@@ -16,6 +17,7 @@ export const parentVariants = {
 
 
 const Nav = ({logout, user}) => {
+  const MotionNav = motion.custom(Link);
     return (
       <StyledNavBar>
         <motion.div
@@ -25,9 +27,9 @@ const Nav = ({logout, user}) => {
           className="nav-contents"
           variants={parentVariants}
         >
-          <motion.div className="logo" variants={theme.variants}>
+          <MotionNav to="/" className="logo" variants={theme.variants}>
             <Logo />
-          </motion.div>
+          </MotionNav>
 
           <motion.div 
           initial="initial"

@@ -1,11 +1,15 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { media, mixin } from 'styles'
+import { media, mixin, theme } from 'styles'
 
 const BookRow = ({book}) => {
     const {title, author, coverImageUrl} = book
     return (
-        <StyledBookRow href="/">
+        <StyledBookRow 
+            aria-labelledby={book.id}
+            to={`/book/${book.id}`}
+         >
             <div className="book-side">
                 <img src={coverImageUrl}  alt={`${title} book cover`}/>
             </div>
@@ -19,7 +23,7 @@ const BookRow = ({book}) => {
     )
 }
 
-const StyledBookRow = styled.a`
+const StyledBookRow = styled(Link)`
     height: 100%;
     text-decoration: none;
     box-sizing: border-box;
@@ -29,6 +33,12 @@ const StyledBookRow = styled.a`
     ${mixin.flexBetween};
     justify-content: flex-start;
     position: relative;
+    color: currentColor;
+    box-sizing: border-box;
+
+    &:hover{
+        background: ${theme.colors.tertiary};
+    }
 
     .book-side{
         width: 33.3333%;
