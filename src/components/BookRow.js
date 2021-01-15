@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import { media, mixin, theme } from 'styles'
 
 const BookRow = ({book}) => {
-    const {title, author, coverImageUrl} = book
+    const {title, author, coverImageUrl} = book 
+
     return (
         <StyledBookRow 
             aria-labelledby={book.id}

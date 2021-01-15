@@ -5,14 +5,16 @@ import Nav from 'components/Nav';
 import SubNav from 'components/SubNav';
 import { media, mixin } from 'styles';
 import Discover from 'Pages/Discover';
+import List from 'Pages/List';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import BookDetail from 'Pages/BookDetail';
 import NotFoundScreen from 'Pages/NotFoundScreen';
+import Finished from 'Pages/Finished';
 
 const AuthenticatedApp= ({logout, user}) => {
     
     return (
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
             <Nav key="nav" logout={logout} user={user}/>
             <SubNav key="subnav"/>
                 <DiscoverBookContainer>
@@ -21,6 +23,8 @@ const AuthenticatedApp= ({logout, user}) => {
                             <Redirect to="/discover" />
                         </Route>
                         <Route path="/discover"><Discover key="discover-key" user={user}/> </Route>
+                        <Route path="/list"><List user={user}/> </Route>
+                        <Route path="/finished"><Finished user={user}/> </Route>
                         <Route path="/book/:bookId"><BookDetail key="book-detail" user={user}/></Route>
                         <Route exact path="*"><NotFoundScreen/></Route>
                     </Switch>

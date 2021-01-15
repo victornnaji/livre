@@ -31,11 +31,11 @@ const loadingBook = {
 
   const moveRightVariant = {
       exit: {opacity: 0, scaleX: 0, transition},
-      enter: {delay: 1, opacity: 1, transition: {...transition}, scaleX: 1, transformOrigin: "left"}
+      enter: { opacity: 1, transition: {...transition}, scaleX: 1, transformOrigin: "left"}
   };
   const moveLeftVariant = {
       exit: {opacity: 0, scaleX: 0, transition},
-      enter: {opacity: 1, transition: {...transition}, scaleX: 1, transformOrigin: "right"}
+      enter: {opacity: .6, transition: {...transition}, scaleX: 1, transformOrigin: "right"}
   }
 
   const imageVariants = {

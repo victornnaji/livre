@@ -1,4 +1,3 @@
-import DiscoverScreen from 'components/DiscoverScreen';
 import React from 'react'
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
@@ -6,7 +5,11 @@ import {motion} from 'framer-motion';
 import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
 import { useAsync } from 'hooks/use-async';
+import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
+import bookPlaceholderSvg from 'assets/PlaceHolder.svg';
+import Loading from 'components/Loading';
+import BookRow from 'components/BookRow';
 
 const variants = {
     initial: {y: -7, opacity: 0},
@@ -21,17 +24,37 @@ const variants = {
     },
 }
 
+const loadingBook = {
+    title: 'Loading...',
+    author: 'loading...',
+    coverImageUrl: bookPlaceholderSvg,
+    publisher: 'Loading Publishing',
+    synopsis: 'Loading...',
+    loadingBook: true,
+  }
+  
+  const loadingBooks = Array.from({length: 10}, (v, index) => ({
+    id: `loading-book-${index}`,
+    ...loadingBook,
+  }))
+
 const Discover = ({user}) => {
     const [query, setQuery] = React.useState("")
     const [queried, setQueried] = React.useState(false)
-    const {data, error, run, isLoading, isError, isSuccess, isIdle} = useAsync()
+    const {data, error, run, isLoading, isError, isSuccess, isIdle} = useAsync();
+
+    const books = data ?? loadingBooks
 
     
     React.useEffect(() => {
         if (!queried) {
             return
         }
-        run(client(`books?query=${encodeURIComponent(query)}`, {token: user.token}))
+        run(
+            client(`books?query=${encodeURIComponent(query)}`, {
+              token: user.token,
+            }).then(data => data.books),
+          )
     }, [query, queried, run, user.token])
     
     const handleSearchSubmit = (e) => {
@@ -41,23 +64,98 @@ const Discover = ({user}) => {
     }
 
     return (
-        <StyledDiscover>
-            <motion.div className="search-form" variants={variants} initial="initial"
-            animate="enter"
-            exit="exit">
-                <form onSubmit={handleSearchSubmit}>
-                    <label htmlFor="search" className="search-btn">
-                    {isLoading ? (<Spinner />) : isError ? (<Times aria-label="error" className="error-icon"/>) : (
-                        <button type="submit" title="Search books"><svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" aria-label="search" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path></svg></button>
-                    )}
-                    </label>
-                    <input type="search" placeholder="Search books..." id="search"/>
-                </form>
-            </motion.div>
+      <StyledDiscover>
+        <motion.div
+          className="search-form"
+          variants={variants}
+          initial="initial"
+          animate="enter"
+          exit="exit"
+        >
+          <form onSubmit={handleSearchSubmit}>
+            <label htmlFor="search" className="search-btn">
+              {isLoading ? (
+                <Spinner />
+              ) : isError ? (
+                <Times aria-label="error" className="error-icon" />
+              ) : (
+                <button type="submit" title="Search books">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 512 512"
+                    aria-label="search"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                  </svg>
+                </button>
+              )}
+            </label>
+            <input type="search" placeholder="Search books..." id="search" />
+          </form>
+        </motion.div>
 
-            <DiscoverScreen user={user} data={data} error={error} isSuccess={isSuccess} isIdle={isIdle} isLoading={isLoading} isError ={isError }/>
-        </StyledDiscover>
-    )
+        <StyledDiscoverScreen>
+          <div>
+            {isError ? (
+              <div className="error-message">
+                <p>There was an error:</p>
+                <pre>{error.message}</pre>
+              </div>
+            ) : null}
+
+            <div>
+              {queried ? null : (
+                <div>
+                  <p className="initial-book-header">
+                    Welcome to the discover page.
+                  </p>
+                  <p className="initial-book-header">
+                    Here, let me load a few books for you...
+                  </p>
+                  {isLoading ? (
+                    <div style={{ position: "relative" }}>
+                      <Loading />
+                    </div>
+                  ) : isSuccess && books.length ? (
+                    <p className="initial-book-header">
+                      Here you go! Find more books with the search bar above.
+                    </p>
+                  ) : isSuccess && !books.length ? (
+                    <p className="initial-book-header">
+                      Hmmm... I couldn't find any books to suggest for you.
+                      Sorry.
+                    </p>
+                  ) : null}
+                </div>
+              )}
+            </div>
+
+            {isSuccess ? (
+              books.length ? (
+                <BookSearchResult>
+                  {books.map((book) => (
+                    <div
+                      className={`x ${books.length < 3 ? "two-books" : null}`}
+                      key={book.id}
+                    >
+                      <BookRow book={book} />
+                    </div>
+                  ))}
+                </BookSearchResult>
+              ) : (
+                <p>No books found. Try another search.</p>
+              )
+            ) : null}
+          </div>
+          <TopPicks user={user} />
+        </StyledDiscoverScreen>
+      </StyledDiscover>
+    );
 }
 
 const StyledDiscover = styled.div`
@@ -122,4 +220,52 @@ const StyledDiscover = styled.div`
         font-size: 1.4rem;
     }
 `
+
+const StyledDiscoverScreen = styled.div`
+        margin-top: 3rem;
+        display: grid;
+        grid-template-columns: 2.5fr 1fr;
+        column-gap: 2rem;
+        position: relative;
+
+        ${media.phablet`grid-template-columns: 1fr; row-gap: 5rem;`}
+
+        .initial-book-header{
+          font-size: 1.5rem;
+          text-align: center;
+          margin-bottom: 2rem;
+
+          &:last-of-type{
+            margin-bottom: 5rem;
+          };
+
+        }
+
+`;
+
+const BookSearchResult = styled.div`   
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .x{
+        width: 49.5%;
+        ${media.phablet`width: 100%; `}
+        ${media.tablet`min-height: 250px`};
+        ${media.phone`min-height: 220px`};
+        margin-bottom: .7rem;
+        background-color: ${theme.colors.grey};
+        
+        &.two-books{
+            height: 22rem !important;
+        }
+    }
+
+    ${media.phablet`flex-direction: column; min-height: 5rem;`}
+`;
+
+
 export default Discover
