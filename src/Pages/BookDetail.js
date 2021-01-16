@@ -6,7 +6,6 @@ import {Link, useParams} from 'react-router-dom'
 import { client } from '_helpers/client';
 import PlaceHolder from 'assets/PlaceHolder.svg';
 import { media, mixin, theme } from 'styles';
-import { parentVariants } from 'components/Nav';
 import Laptop from 'assets/Laptop';
 
 
@@ -19,33 +18,6 @@ const loadingBook = {
     pageCount: '...loading',
     loadingBook: true,
   }
-
-  const transition = {
-     stiffness: 1000 , duration: 1, ease: [0.43, 0.13, 0.23, 0.96]
-  };
-
-  const backVariants = {
-    exit: { x: 10, opacity: 0, transition },
-    enter: { x: 0, opacity: 1, transition: { delay: .5,...transition } }
-  };
-
-  const moveRightVariant = {
-      exit: {opacity: 0, scaleX: 0, transition},
-      enter: { opacity: 1, transition: {...transition}, scaleX: 1, transformOrigin: "left"}
-  };
-  const moveLeftVariant = {
-      exit: {opacity: 0, scaleX: 0, transition},
-      enter: {opacity: .6, transition: {...transition}, scaleX: 1, transformOrigin: "right"}
-  }
-
-  const imageVariants = {
-    exit: {opacity: 0, x: -100, transition},
-    enter: { opacity: 1, transition: {delay: 1.3,...transition}, x: 0, transformOrigin: "left"}
-  };
-  const textVariants = {
-    exit: {opacity: 0, x: 100, transition},
-    enter: { opacity: 1, transition: {delay: 1.3,...transition}, x: 0, transformOrigin: "left"}
-  };
 
 const LinkBtn = motion.custom(Link);
 
@@ -63,13 +35,13 @@ const BookDetail = ({user}) => {
     const MotionBookDetail = motion.custom(StyledBookDetail);
 
     return (
-        <MotionBookDetail initial="exit" animate="enter" exit="exit" variants={parentVariants}>
-          <LinkBtn to="/discover" className="back-button" variants={backVariants}>← Back</LinkBtn>
-          <motion.div className="column image-column" variants={moveRightVariant}>
-              <motion.img className="image" src={coverImageUrl} style={{width: '100%', maxWidth: '30rem'}} alt={`${title} book cover`} variants={imageVariants}/>
+        <MotionBookDetail initial="exit" animate="enter" exit="exit">
+          <LinkBtn to="/discover" className="back-button">← Back</LinkBtn>
+          <motion.div className="column image-column">
+              <motion.img className="image" src={coverImageUrl} style={{width: '100%', maxWidth: '30rem'}} alt={`${title} book cover`}/>
           </motion.div>
-          <motion.div className="column text-column" variants={moveLeftVariant}>
-              <motion.div className="text-container" variants={textVariants}>
+          <motion.div className="column text-column" >
+              <div className="text-container" >
                   <div className="title-row">{title}</div>
                   <div className="author-row">
                       <div className="author">{author}</div>
@@ -89,7 +61,7 @@ const BookDetail = ({user}) => {
                       <div className="title">Synopsis:</div>
                       <div className="synopsis">{synopsis}</div>
                   </div>
-              </motion.div>
+              </div>
           </motion.div>
         </MotionBookDetail>
     )

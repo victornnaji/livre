@@ -1,28 +1,14 @@
 import React from 'react'
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
-import {motion} from 'framer-motion';
 import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
-import { useAsync } from 'hooks/use-async';
 import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
 import bookPlaceholderSvg from 'assets/PlaceHolder.svg';
 import Loading from 'components/Loading';
 import BookRow from 'components/BookRow';
-
-const variants = {
-    initial: {y: -7, opacity: 0},
-    exit: {
-        y: 5, opacity: 0,
-        transition: { y: { duration: 1.2, ease: [0.43, 0.13, 0.23, 0.96]} },
-    },
-      enter: {
-        y: 0,
-        opacity: 1,
-        transition: {  duration: .9, ease: [0.43, 0.13, 0.23, 0.96] , delay: .9},
-    },
-}
+import {useQuery} from 'react-query';
 
 const loadingBook = {
     title: 'Loading...',
@@ -39,23 +25,16 @@ const loadingBook = {
   }))
 
 const Discover = ({user}) => {
-    const [query, setQuery] = React.useState("")
-    const [queried, setQueried] = React.useState(false)
-    const {data, error, run, isLoading, isError, isSuccess, isIdle} = useAsync();
+    const [query, setQuery] = React.useState("");
+    const [queried, setQueried] = React.useState(false);
 
-    const books = data ?? loadingBooks
+    const {data: books = loadingBooks, error, isLoading, isError, isSuccess} = useQuery({
+      queryKey: ['book-search', {query}],
+      queryFn: () => client(`books?query=${encodeURIComponent(query)}`, {
+        token: user.token,
+      }).then(data => data.books)
+    })
 
-    
-    React.useEffect(() => {
-        if (!queried) {
-            return
-        }
-        run(
-            client(`books?query=${encodeURIComponent(query)}`, {
-              token: user.token,
-            }).then(data => data.books),
-          )
-    }, [query, queried, run, user.token])
     
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -65,12 +44,8 @@ const Discover = ({user}) => {
 
     return (
       <StyledDiscover>
-        <motion.div
+        <div
           className="search-form"
-          variants={variants}
-          initial="initial"
-          animate="enter"
-          exit="exit"
         >
           <form onSubmit={handleSearchSubmit}>
             <label htmlFor="search" className="search-btn">
@@ -97,7 +72,7 @@ const Discover = ({user}) => {
             </label>
             <input type="search" placeholder="Search books..." id="search" />
           </form>
-        </motion.div>
+        </div>
 
         <StyledDiscoverScreen>
           <div>
@@ -143,7 +118,7 @@ const Discover = ({user}) => {
                       className={`x ${books.length < 3 ? "two-books" : null}`}
                       key={book.id}
                     >
-                      <BookRow book={book} />
+                      <BookRow book={book} user={user}/>
                     </div>
                   ))}
                 </BookSearchResult>
@@ -228,7 +203,7 @@ const StyledDiscoverScreen = styled.div`
         column-gap: 2rem;
         position: relative;
 
-        ${media.phablet`grid-template-columns: 1fr; row-gap: 5rem;`}
+        ${media.tablet`grid-template-columns: 1fr; row-gap: 5rem;`}
 
         .initial-book-header{
           font-size: 1.5rem;
@@ -260,7 +235,7 @@ const BookSearchResult = styled.div`
         background-color: ${theme.colors.grey};
         
         &.two-books{
-            height: 22rem !important;
+            height: 26rem !important;
         }
     }
 
