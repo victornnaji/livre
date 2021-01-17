@@ -5,6 +5,11 @@ const theme = {
         tertiary : '#8BD7C1',
         darkTertiary: '#56c4a4',
         grey: '#F4F4F3',
+        yellow: '#ffc107',
+        green: "#4caf50",
+        danger: '#ef5350',
+        indigo: "#3f51b5",
+        gray20: "#6f7077",
     },
     fonts: {
         Nunito : 'Nunito, sans-serif',

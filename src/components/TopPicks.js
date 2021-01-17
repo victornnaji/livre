@@ -1,25 +1,34 @@
-import { useAsync } from 'hooks/use-async';
 import React from 'react'
 import styled from 'styled-components'
 import { theme } from 'styles';
 import { client } from '_helpers/client';
-import Loading from './Loading';
 import {Link} from 'react-router-dom';
+import PlaceHolder from 'assets/PlaceHolder.svg';
+import {useQuery} from 'react-query';
+
+
+const loadingBook = {
+    title: 'Loading...',
+    author: 'loading...',
+    coverImageUrl: PlaceHolder,
+    publisher: 'Loading Publishing',
+    synopsis: 'Loading...',
+    pageCount: '...loading',
+    loadingBook: true,
+  }
 
 const TopPicks = ({user}) => {
-    const {run, data, isError, isLoading, isIdle, isSuccess} = useAsync();
+    const {data, isError} = useQuery({
+        queryKey: ['top-pick'],
+        queryFn: () => client(`books?query=`, {token: user.token}),
+    })
 
-    React.useEffect(() => {
-        run(client(`books?query=`, {token: user.token}))
-    }, [run, user.token])
-
-    const randBook = Math.floor(Math.random() * 10);
-    const book = data?.books[randBook];
+    var d = new Date();
+    var n = d.getUTCDay();
+    const book = data ? data.books[n] : loadingBook;
 
     return (
         <StyledToPicks>
-            {isIdle || isLoading ? (<Loading />): null}
-            {isSuccess ? (
                 <StyledTopPickBook 
                 aria-labelledby={book.id}
                 to={`/book/${book.id}`}>
@@ -32,7 +41,6 @@ const TopPicks = ({user}) => {
                         <div className="author">{book.author}</div>
                     </div>
                 </StyledTopPickBook>
-            ) : (null)}
             {isError ? (<div>error fetching book</div>) : null}
         </StyledToPicks>
     )

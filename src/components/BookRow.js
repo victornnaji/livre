@@ -2,46 +2,80 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { media, mixin, theme } from 'styles'
+import Rating from './Rating'
+import StatusButton from './StatusButton'
+import {useQuery} from 'react-query';
+import { client } from '_helpers/client'
 
-const BookRow = ({book}) => {
-    const {title, author, coverImageUrl} = book
+const BookRow = ({book, user}) => {
+    const {title, author, coverImageUrl} = book;
+
+    const {data: listItems} = useQuery({
+        queryKey: 'list-items',
+        queryFn: () =>
+          client(`list-items`, {token: user.token}).then(data => data.listItems),
+      })
+      const listItem = listItems?.find(li => li.bookId === book.id) ?? null
+    
+      const id = `book-row-book-${book.id}`
+
     return (
-        <StyledBookRow 
-            aria-labelledby={book.id}
-            to={`/book/${book.id}`}
-         >
-            <div className="book-side">
-                <img src={coverImageUrl}  alt={`${title} book cover`}/>
-            </div>
-            <div className="text-side">
-                <span className="publisher">{book.publisher}</span>
-                <p className="book-title">{title}</p>
-                <p className="book-author"><span>{author}</span> </p>
-                <small className="synopsis">{book.synopsis.substring(0, 120)}...</small>
+        <StyledBookRow>
+            <BookRowLink aria-labelledby={id}
+            to={`/book/${book.id}`}>
+                <div className="book-side">
+                    <img src={coverImageUrl}  alt={`${title} book cover`}/>
+                </div>
+                <div className="text-side">
+                    <span className="publisher">{book.publisher}</span>
+                    <p className="book-title">{title}</p>
+                    <div className="book-author">
+                        <span>{author}</span> 
+                        <div className="book-rating">
+                            {listItem?.finishDate ? (
+                                <Rating user={user} listItem={listItem} />
+                            ) : null}
+                        </div>
+                    </div>
+                    <small className="synopsis">{book.synopsis.substring(0, 120)}...</small>
+                </div>
+            </BookRowLink>
+            <div className="button-side">
+                <StatusButton user={user} book={book}/>
             </div>
         </StyledBookRow>
     )
 }
 
-const StyledBookRow = styled(Link)`
-    height: 100%;
-    text-decoration: none;
-    box-sizing: border-box;
-    padding: 1.5rem;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+const BookRowLink = styled(Link)`
     ${mixin.flexBetween};
     justify-content: flex-start;
+    align-items: flex-start;
     position: relative;
+    text-decoration: none;
     color: currentColor;
+    grid-column: 1/ -1;
+`
+
+const StyledBookRow = styled.div`
+    height: 100%;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 33.3% auto;
+    grid-template-rows: auto auto;
     box-sizing: border-box;
 
     &:hover{
-        background: ${theme.colors.tertiary};
+        /* background: ${theme.colors.tertiary}; */
+        box-shadow: ${theme.colors.gray20} 0px 5px 15px -5px ;
     }
 
     .book-side{
         width: 33.3333%;
+        height: 20rem;
+        ${media.phablet`height: 100%`}
+        ${media.phone`transform: translateY(3.5rem)`}
 
         img{
             max-width: 100%;
@@ -50,18 +84,23 @@ const StyledBookRow = styled(Link)`
         }
     }
 
+    .button-side{
+        grid-column: 2;
+    }
+
     .text-side{
         width: 66.6667%;
         margin-left: 1.6rem;
         font-size: 1.4rem;
-        ${media.phone`font-size: 1.2rem`}
+        ${media.desktop`margin-bottom: 2rem`}
+        ${media.phone`font-size: 1.1rem;`}
 
         .publisher{
             font-weight: 400;
             font-size: 1rem;
-            position: absolute;
-            top: 2rem;
-            right: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: right;
+            display: block;
         }
 
         .book-title{
@@ -74,10 +113,12 @@ const StyledBookRow = styled(Link)`
         .book-author{
             ${mixin.flexBetween};
             font-weight: 700;
+            font-size: 1.2rem;
         }
 
         .synopsis{
             margin-top: 1.2rem;
+            font-size: 1.4rem;
             display: inline-block;
         }
     }
