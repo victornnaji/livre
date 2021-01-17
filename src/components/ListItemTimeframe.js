@@ -1,7 +1,6 @@
 import Calendar from 'assets/Calendar';
 import {formatDate} from '_helpers/format-date';
 import Tooltip from "@reach/tooltip";
-import styled from 'styled-components';
 
 function ListItemTimeframe({ listItem }) {
   const timeframeLabel = listItem.finishDate

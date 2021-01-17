@@ -40,7 +40,7 @@ const BookDetail = ({user}) => {
 
     const listItem = listItems?.find(li => li.bookId === bookId) ?? null
 
-    const {title, author, coverImageUrl, publisher, synopsis, pageCount} = book
+    const {title, author, coverImageUrl, publisher, synopsis} = book
 
     return (
       <StyledBookDetail>
