@@ -9,15 +9,15 @@ import RemoveSvg from 'assets/RemoveSvg'
 import { useListItem } from 'hooks/query-hooks'
 import { useUpdateListItem, useCreateListItem, useRemoveListItem } from 'hooks/mutation-hooks'
 
-const StatusButton = ({user, book}) => {
+const StatusButton = ({book}) => {
   const colors = theme.colors;
-  const listItem = useListItem(book.id, user);
+  const listItem = useListItem(book.id);
 
-  const { mutateAsync: create } = useCreateListItem(user, {throwOnError: true});
+  const { mutateAsync: create } = useCreateListItem({throwOnError: true});
 
-  const { mutateAsync: remove } = useRemoveListItem(user, {throwOnError: true});
+  const { mutateAsync: remove } = useRemoveListItem({throwOnError: true});
 
-  const { mutateAsync: update } = useUpdateListItem(user, {throwOnError: true});
+  const { mutateAsync: update } = useUpdateListItem({throwOnError: true});
   return (
     <StyledStatusButton>
       {listItem ? (

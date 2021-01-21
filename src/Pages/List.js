@@ -2,10 +2,9 @@ import React from 'react'
 import ListItemList from 'components/ListItemList'
 import { Link } from 'react-router-dom'
 
-const List = ({user}) => {
+const List = () => {
     return (
       <ListItemList
-        user={user}
         filterListItems={(li) => !li.finishDate}
         noListItems={
           <p>

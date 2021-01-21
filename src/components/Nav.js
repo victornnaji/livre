@@ -5,6 +5,7 @@ import { media, mixin, theme } from 'styles'
 import {motion} from 'framer-motion'
 import { StyledButton } from './Button'
 import { Link } from 'react-router-dom'
+import { useAuth } from '_context/auth-context'
 
 export const parentVariants = {
     exit: {
@@ -16,7 +17,8 @@ export const parentVariants = {
 }
 
 
-const Nav = ({logout, user}) => {
+const Nav = () => {
+  const {user, logout} = useAuth();
   const MotionNav = motion.custom(Link);
     return (
       <StyledNavBar>

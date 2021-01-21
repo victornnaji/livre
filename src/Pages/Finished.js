@@ -2,11 +2,9 @@ import ListItemList from 'components/ListItemList'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Finished = ({user}) => {
-
+const Finished = () => {
     return (
         <ListItemList 
-            user={user}
             filterListItems={li => Boolean(li.finishDate)}
             noListItems={
                 <p>

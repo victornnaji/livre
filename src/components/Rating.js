@@ -18,11 +18,11 @@ const visuallyHiddenCSS = {
   width: '1px',
 }
 
-function Rating({listItem, user}) {
+function Rating({listItem}) {
   const [isTabbing, setIsTabbing] = React.useState(false);
   const colors = theme.colors;
 
-  const { mutateAsync: update } = useUpdateListItem(user);
+  const { mutateAsync: update } = useUpdateListItem();
   
   React.useEffect(() => {
     function handleKeyDown(event) {

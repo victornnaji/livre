@@ -5,8 +5,10 @@ import AuthForm from 'components/Form';
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
 import { AnimatePresence , motion} from "framer-motion";
+import { useAuth } from '_context/auth-context';
 
-function UnAuthenticatedApp({login, register}) {
+function UnAuthenticatedApp() {
+  const {login, register} = useAuth();
 
   const [showRegister, setShowRegister] = React.useState(false);
 

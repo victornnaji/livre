@@ -6,20 +6,21 @@ import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
 import BookRow from 'components/BookRow';
 import {useQueryClient} from 'react-query';
-import { useBookSearch, refetchBookSearchQuery } from 'hooks/query-hooks';
+import { useBookSearch, useRefetchBookSearchQuery } from 'hooks/query-hooks';
 
-const Discover = ({user}) => {
+const Discover = () => {
     const [query, setQuery] = React.useState("");
     const [queried, setQueried] = React.useState(false);
     const queryCache = useQueryClient();
 
-    const {books, error, isLoading, isError, isSuccess} = useBookSearch(query, user)
+    const {books, error, isLoading, isError, isSuccess} = useBookSearch(query);
+    const refetchBookSearchQuery = useRefetchBookSearchQuery();
 
     React.useEffect(() => {
      return () => {
-      refetchBookSearchQuery(queryCache, user);
+      refetchBookSearchQuery(queryCache);
      }
-    }, [queryCache, user])
+    }, [queryCache, refetchBookSearchQuery])
     
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -102,7 +103,7 @@ const Discover = ({user}) => {
                       className={`x ${books.length < 3 ? "two-books" : null}`}
                       key={book.id}
                     >
-                      <BookRow book={book} user={user}/>
+                      <BookRow book={book}/>
                     </div>
                   ))}
                 </BookSearchResult>
@@ -111,7 +112,7 @@ const Discover = ({user}) => {
               )
             }
           </div>
-          <TopPicks user={user} />
+          <TopPicks />
         </StyledDiscoverScreen>
       </StyledDiscover>
     );

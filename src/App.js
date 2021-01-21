@@ -1,57 +1,11 @@
 import React from 'react'
 import AuthenticatedApp from './AuthenticatedApp'
 import UnAuthenticatedApp from './UnAuthenticatedApp'
-import * as auth from '_helpers/auth_provider'
-import { useAsync } from 'hooks/use-async'
-import getUser from '_helpers/get-user'
-import Loading from 'components/Loading'
-import {BrowserRouter as Router} from 'react-router-dom';
+import { useAuth } from '_context/auth-context'
 
 const App = () => {
-
-    const {
-        data: user,
-        error,
-        isLoading,
-        isIdle,
-        isError,
-        isSuccess,
-        run,
-        setData,
-      } = useAsync()
-
-    React.useEffect(() => {
-        run(getUser());
-    }, [run]);
-
-    if (isLoading || isIdle) {
-        return <Loading />
-    }
-
-    if (isError) {
-        return (
-          <div>
-            <p>Uh oh... There's a problem. Try refreshing the app.</p>
-            <pre>{error.message}</pre>
-          </div>
-        )
-      }
-
-    if(isSuccess){
-        const login = form => auth.login(form).then(u => setData(u))
-        const register = form => auth.register(form).then(u => setData(u));
-        const logout = () => {
-            auth.logout()
-            setData(null)
-        }
-    
-        return user ? (
-          <Router>
-            <AuthenticatedApp  user={user} logout={logout}/>
-          </Router>
-        ) : <UnAuthenticatedApp login={login} register={register}/>
-    }
-
-}
+  const { user } = useAuth();
+  return user ? <AuthenticatedApp /> : <UnAuthenticatedApp />
+};
 
 export default App

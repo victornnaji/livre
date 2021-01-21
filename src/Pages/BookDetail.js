@@ -10,7 +10,7 @@ import ListItemTimeframe from 'components/ListItemTimeframe';
 import { useHistory } from "react-router-dom";
 import { useBook, useListItem} from 'hooks/query-hooks';
 
-const BookDetail = ({user}) => {
+const BookDetail = () => {
     let history = useHistory();
     React.useLayoutEffect(() => {
       window.scrollTo(0, 0);
@@ -18,9 +18,9 @@ const BookDetail = ({user}) => {
     
     const { bookId } = useParams();
 
-    const {book} = useBook(bookId, user);
+    const {book} = useBook(bookId);
 
-    const listItem = useListItem(bookId, user);
+    const listItem = useListItem(bookId);
 
     const {title, author, coverImageUrl, publisher, synopsis} = book
 
@@ -46,7 +46,7 @@ const BookDetail = ({user}) => {
                 <>
                 <span className="seperator"></span>
                   <div className="rating">
-                    <Rating user={user} listItem={listItem} />
+                    <Rating listItem={listItem} />
                   </div>
                 </>
               ) : null}
@@ -62,7 +62,7 @@ const BookDetail = ({user}) => {
             </div>
 
             <div className="buttons-row">
-              <StatusButton user={user} book={book} />
+              <StatusButton book={book} />
             </div>
 
             <div className="annotations">
@@ -73,7 +73,7 @@ const BookDetail = ({user}) => {
         </div>
           {!book.loadingBook && listItem ? (
             <StyledNotesContainer>
-                <NotesTextarea user={user} listItem={listItem} />
+                <NotesTextarea listItem={listItem} />
             </StyledNotesContainer>
           ) : null}
       </StyledBookDetail>

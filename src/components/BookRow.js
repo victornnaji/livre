@@ -6,9 +6,9 @@ import Rating from './Rating'
 import StatusButton from './StatusButton'
 import { useListItem } from 'hooks/query-hooks'
 
-const BookRow = ({book, user}) => {
+const BookRow = ({book}) => {
     const { title, author, coverImageUrl } = book;
-    const listItem = useListItem(book.id, user);
+    const listItem = useListItem(book.id);
 
     const id = `book-row-book-${book.id}`;
 
@@ -25,7 +25,7 @@ const BookRow = ({book, user}) => {
               <span>{author}</span>
               <div className="book-rating">
                 {listItem?.finishDate ? (
-                  <Rating user={user} listItem={listItem} />
+                  <Rating listItem={listItem} />
                 ) : null}
               </div>
             </div>
@@ -35,7 +35,7 @@ const BookRow = ({book, user}) => {
           </div>
         </BookRowLink>
         <div className="button-side">
-          <StatusButton user={user} book={book} />
+          <StatusButton book={book} />
         </div>
       </StyledBookRow>
     );
