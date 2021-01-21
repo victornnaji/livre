@@ -4,47 +4,41 @@ import styled from 'styled-components'
 import { media, mixin, theme } from 'styles'
 import Rating from './Rating'
 import StatusButton from './StatusButton'
-import {useQuery} from 'react-query';
-import { client } from '_helpers/client'
+import { useListItem } from 'hooks/query-hooks'
 
 const BookRow = ({book, user}) => {
-    const {title, author, coverImageUrl} = book;
+    const { title, author, coverImageUrl } = book;
+    const listItem = useListItem(book.id, user);
 
-    const {data: listItems} = useQuery({
-        queryKey: 'list-items',
-        queryFn: () =>
-          client(`list-items`, {token: user.token}).then(data => data.listItems),
-      })
-      const listItem = listItems?.find(li => li.bookId === book.id) ?? null
-    
-      const id = `book-row-book-${book.id}`
+    const id = `book-row-book-${book.id}`;
 
     return (
-        <StyledBookRow>
-            <BookRowLink aria-labelledby={id}
-            to={`/book/${book.id}`}>
-                <div className="book-side">
-                    <img src={coverImageUrl}  alt={`${title} book cover`}/>
-                </div>
-                <div className="text-side">
-                    <span className="publisher">{book.publisher}</span>
-                    <p className="book-title">{title}</p>
-                    <div className="book-author">
-                        <span>{author}</span> 
-                        <div className="book-rating">
-                            {listItem?.finishDate ? (
-                                <Rating user={user} listItem={listItem} />
-                            ) : null}
-                        </div>
-                    </div>
-                    <small className="synopsis">{book.synopsis.substring(0, 120)}...</small>
-                </div>
-            </BookRowLink>
-            <div className="button-side">
-                <StatusButton user={user} book={book}/>
+      <StyledBookRow>
+        <BookRowLink aria-labelledby={id} to={`/book/${book.id}`}>
+          <div className="book-side">
+            <img src={coverImageUrl} alt={`${title} book cover`} />
+          </div>
+          <div className="text-side">
+            <span className="publisher">{book.publisher}</span>
+            <p className="book-title">{title}</p>
+            <div className="book-author">
+              <span>{author}</span>
+              <div className="book-rating">
+                {listItem?.finishDate ? (
+                  <Rating user={user} listItem={listItem} />
+                ) : null}
+              </div>
             </div>
-        </StyledBookRow>
-    )
+            <small className="synopsis">
+              {book.synopsis.substring(0, 120)}...
+            </small>
+          </div>
+        </BookRowLink>
+        <div className="button-side">
+          <StatusButton user={user} book={book} />
+        </div>
+      </StyledBookRow>
+    );
 }
 
 const BookRowLink = styled(Link)`
@@ -79,8 +73,9 @@ const StyledBookRow = styled.div`
 
         img{
             max-width: 100%;
-            height: auto;
+            height: 100%;
             box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 8px 0px, rgba(0, 0, 0, 0.08) 0px 2px 4px 0px;
+            ${media.phablet`height: auto`};
         }
     }
 

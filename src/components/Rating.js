@@ -5,11 +5,7 @@ import { jsx } from '@emotion/react'
 import FaStar from 'assets/FaStar'
 import React from 'react'
 import { theme } from 'styles'
-// 🐨 you'll need useMutation and queryCache from react-query
-import {useMutation,useQueryClient} from 'react-query';
-import { client } from '_helpers/client';
-// 🐨 you'll also need the client from utils/api-client
-
+import { useUpdateListItem } from 'hooks/mutation-hooks';
 
 const visuallyHiddenCSS = {
   border: '0',
@@ -26,12 +22,7 @@ function Rating({listItem, user}) {
   const [isTabbing, setIsTabbing] = React.useState(false);
   const colors = theme.colors;
 
-  const queryCache = useQueryClient();
-
-  const {mutateAsync: update} = useMutation(
-      updates => client(`list-items/${updates.id}`, {method: 'PUT', data: updates, token: user.token}),
-      {onSettled: () => queryCache.invalidateQueries('list-items')},
-  )
+  const { mutateAsync: update } = useUpdateListItem(user);
   
   React.useEffect(() => {
     function handleKeyDown(event) {

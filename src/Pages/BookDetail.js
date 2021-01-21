@@ -1,52 +1,34 @@
 import React from 'react'
 import styled from 'styled-components';
-import {Link, useParams} from 'react-router-dom'
-import { client } from '_helpers/client';
-import PlaceHolder from 'assets/PlaceHolder.svg';
+import {useParams} from 'react-router-dom'
 import { media, mixin, theme } from 'styles';
 import Laptop from 'assets/Laptop';
 import StatusButton from 'components/StatusButton';
 import NotesTextarea from 'components/NotesTextarea';
 import Rating from 'components/Rating';
 import ListItemTimeframe from 'components/ListItemTimeframe';
-import {useQuery} from 'react-query';
-
-
-const loadingBook = {
-    title: 'Loading...',
-    author: 'loading...',
-    coverImageUrl: PlaceHolder,
-    publisher: 'Loading Publishing',
-    synopsis: 'Loading...',
-    pageCount: '...loading',
-    loadingBook: true,
-  }
+import { useHistory } from "react-router-dom";
+import { useBook, useListItem} from 'hooks/query-hooks';
 
 const BookDetail = ({user}) => {
+    let history = useHistory();
+    React.useLayoutEffect(() => {
+      window.scrollTo(0, 0);
+    }, [])
+    
     const { bookId } = useParams();
 
-    const {data : book = loadingBook } = useQuery({
-        queryKey: ['book', {bookId}],
-        queryFn: () => client(`books/${bookId}`, {token: user.token}).then(data => data.book),
-    });
+    const {book} = useBook(bookId, user);
 
-    const { data: listItems } = useQuery({
-      queryKey: "list-items",
-      queryFn: () =>
-        client(`list-items`, { token: user.token }).then(
-          (data) => data.listItems
-        ),
-    });
-
-    const listItem = listItems?.find(li => li.bookId === bookId) ?? null
+    const listItem = useListItem(bookId, user);
 
     const {title, author, coverImageUrl, publisher, synopsis} = book
 
     return (
       <StyledBookDetail>
-        <Link to="/discover" className="back-button">
+        <div onClick={history.goBack} className="back-button">
           ← Back
-        </Link>
+        </div>
         <div className="column image-column">
           <img
             className="image"
@@ -119,6 +101,7 @@ const StyledBookDetail = styled.div`
         text-decoration: none;
         font-size: 1.5rem;
         width: 10rem;
+        cursor: pointer;
         ${media.phablet`display: block; margin-bottom: 2rem`}
 
         &:hover{

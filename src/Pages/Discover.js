@@ -1,40 +1,25 @@
 import React from 'react'
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
-import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
 import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
-import bookPlaceholderSvg from 'assets/PlaceHolder.svg';
-import Loading from 'components/Loading';
 import BookRow from 'components/BookRow';
-import {useQuery} from 'react-query';
-
-const loadingBook = {
-    title: 'Loading...',
-    author: 'loading...',
-    coverImageUrl: bookPlaceholderSvg,
-    publisher: 'Loading Publishing',
-    synopsis: 'Loading...',
-    loadingBook: true,
-  }
-  
-  const loadingBooks = Array.from({length: 10}, (v, index) => ({
-    id: `loading-book-${index}`,
-    ...loadingBook,
-  }))
+import {useQueryClient} from 'react-query';
+import { useBookSearch, refetchBookSearchQuery } from 'hooks/query-hooks';
 
 const Discover = ({user}) => {
     const [query, setQuery] = React.useState("");
     const [queried, setQueried] = React.useState(false);
+    const queryCache = useQueryClient();
 
-    const {data: books = loadingBooks, error, isLoading, isError, isSuccess} = useQuery({
-      queryKey: ['book-search', {query}],
-      queryFn: () => client(`books?query=${encodeURIComponent(query)}`, {
-        token: user.token,
-      }).then(data => data.books)
-    })
+    const {books, error, isLoading, isError, isSuccess} = useBookSearch(query, user)
 
+    React.useEffect(() => {
+     return () => {
+      refetchBookSearchQuery(queryCache, user);
+     }
+    }, [queryCache, user])
     
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -93,8 +78,8 @@ const Discover = ({user}) => {
                     Here, let me load a few books for you...
                   </p>
                   {isLoading ? (
-                    <div style={{ position: "relative" }}>
-                      <Loading />
+                    <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
+                      <Spinner />
                     </div>
                   ) : isSuccess && books.length ? (
                     <p className="initial-book-header">
@@ -110,8 +95,7 @@ const Discover = ({user}) => {
               )}
             </div>
 
-            {isSuccess ? (
-              books.length ? (
+            { books.length ? (
                 <BookSearchResult>
                   {books.map((book) => (
                     <div
@@ -125,7 +109,7 @@ const Discover = ({user}) => {
               ) : (
                 <p>No books found. Try another search.</p>
               )
-            ) : null}
+            }
           </div>
           <TopPicks user={user} />
         </StyledDiscoverScreen>
@@ -218,7 +202,7 @@ const StyledDiscoverScreen = styled.div`
 
 `;
 
-const BookSearchResult = styled.div`   
+export const BookSearchResult = styled.div`   
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
