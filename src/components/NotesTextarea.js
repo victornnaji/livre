@@ -2,27 +2,12 @@ import React from 'react'
 import debounceFn from 'debounce-fn'
 import styled from 'styled-components'
 import { theme } from 'styles'
-import {useMutation, useQueryClient} from 'react-query';
-import { client } from '_helpers/client';
+import { useUpdateListItem } from 'hooks/mutation-hooks';
 
 const NotesTextarea = ({listItem, user}) => {
-// the mutate function should call the list-items/:listItemId endpoint with a PUT
-  //   and the updates as data. The mutate function will be called with the updates
-  //   you can pass as data.
-  // 💰 if you want to get the list-items cache updated after this query finishes
-  // the use the `onSettled` config option to queryCache.invalidateQueries('list-items')
-  // 💣 DELETE THIS ESLINT IGNORE!! Don't ignore the exhaustive deps rule please
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const queryCache = useQueryClient();
 
-  const {mutateAsync: mutate} = useMutation(
-      updates =>  client(`list-items/${updates.id}`, {
-        method: 'PUT',
-        data: updates,
-        token: user.token,
-      }),
-    {onSettled: () => queryCache.invalidateQueries('list-items')},
-  )
+  const {mutateAsync: mutate} = useUpdateListItem(user);
+  
   const debouncedMutate = React.useMemo(() => debounceFn(mutate, {wait: 300}), [
     mutate,
   ])

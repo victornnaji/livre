@@ -29,4 +29,31 @@ function useBookSearch(query, user) {
   return { ...result, books: result.data ?? loadingBooks };
 }
 
-export { useBookSearch };
+function useBook(bookId, user){
+    const result = useQuery({
+        queryKey: ['book', {bookId}],
+        queryFn: () => client(`books/${bookId}`, {token: user.token}).then(data => data.book),
+    });
+
+    return {...result, book: result.data ?? loadingBook};
+}
+
+function useListItems(user){
+    const { data: listItems } = useQuery({
+        queryKey: "list-items",
+        queryFn: () =>
+          client(`list-items`, { token: user.token }).then(
+            (data) => data.listItems
+          ),
+    });
+
+    return listItems;
+}
+
+function useListItem(bookId, user){
+    const listItems = useListItems(user);
+    const listItem = listItems?.find(li => li.bookId === bookId) ?? null
+
+    return listItem;
+}
+export { useBookSearch , useBook, useListItems, useListItem};

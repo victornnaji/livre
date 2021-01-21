@@ -1,46 +1,22 @@
 import React from 'react'
 import styled from 'styled-components';
 import {useParams} from 'react-router-dom'
-import { client } from '_helpers/client';
-import PlaceHolder from 'assets/PlaceHolder.svg';
 import { media, mixin, theme } from 'styles';
 import Laptop from 'assets/Laptop';
 import StatusButton from 'components/StatusButton';
 import NotesTextarea from 'components/NotesTextarea';
 import Rating from 'components/Rating';
 import ListItemTimeframe from 'components/ListItemTimeframe';
-import {useQuery} from 'react-query';
 import { useHistory } from "react-router-dom";
-
-
-const loadingBook = {
-    title: 'Loading...',
-    author: 'loading...',
-    coverImageUrl: PlaceHolder,
-    publisher: 'Loading Publishing',
-    synopsis: 'Loading...',
-    pageCount: '...loading',
-    loadingBook: true,
-}
+import { useBook, useListItem} from 'hooks/query-hooks';
 
 const BookDetail = ({user}) => {
     let history = useHistory();
     const { bookId } = useParams();
 
-    const {data : book = loadingBook } = useQuery({
-        queryKey: ['book', {bookId}],
-        queryFn: () => client(`books/${bookId}`, {token: user.token}).then(data => data.book),
-    });
+    const {book} = useBook(bookId, user);
 
-    const { data: listItems } = useQuery({
-      queryKey: "list-items",
-      queryFn: () =>
-        client(`list-items`, { token: user.token }).then(
-          (data) => data.listItems
-        ),
-    });
-
-    const listItem = listItems?.find(li => li.bookId === bookId) ?? null
+    const listItem = useListItem(bookId, user);
 
     const {title, author, coverImageUrl, publisher, synopsis} = book
 

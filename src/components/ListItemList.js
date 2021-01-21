@@ -1,8 +1,7 @@
 import React from 'react'
 import BookRow from './BookRow';
 import {BookSearchResult} from 'Pages/Discover';
-import {useQuery} from 'react-query';
-import { client } from '_helpers/client';
+import { useListItems } from 'hooks/query-hooks';
 
 const ListItemList = ({
   user,
@@ -11,10 +10,7 @@ const ListItemList = ({
   noFilteredListItems,
 }) => {
 
-    const {data: listItems} = useQuery({
-        queryKey: 'list-items',
-        queryFn: () => client('list-items', {token: user.token}).then(data => data.listItems),
-    })
+   const listItems = useListItems(user);
   
   const filteredListItems = listItems?.filter(filterListItems)
   
