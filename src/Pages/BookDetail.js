@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import {Link, useParams} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import { client } from '_helpers/client';
 import PlaceHolder from 'assets/PlaceHolder.svg';
 import { media, mixin, theme } from 'styles';
@@ -10,6 +10,7 @@ import NotesTextarea from 'components/NotesTextarea';
 import Rating from 'components/Rating';
 import ListItemTimeframe from 'components/ListItemTimeframe';
 import {useQuery} from 'react-query';
+import { useHistory } from "react-router-dom";
 
 
 const loadingBook = {
@@ -20,9 +21,10 @@ const loadingBook = {
     synopsis: 'Loading...',
     pageCount: '...loading',
     loadingBook: true,
-  }
+}
 
 const BookDetail = ({user}) => {
+    let history = useHistory();
     const { bookId } = useParams();
 
     const {data : book = loadingBook } = useQuery({
@@ -44,9 +46,9 @@ const BookDetail = ({user}) => {
 
     return (
       <StyledBookDetail>
-        <Link to="/discover" className="back-button">
+        <div onClick={history.goBack} className="back-button">
           ← Back
-        </Link>
+        </div>
         <div className="column image-column">
           <img
             className="image"
@@ -119,6 +121,7 @@ const StyledBookDetail = styled.div`
         text-decoration: none;
         font-size: 1.5rem;
         width: 10rem;
+        cursor: pointer;
         ${media.phablet`display: block; margin-bottom: 2rem`}
 
         &:hover{

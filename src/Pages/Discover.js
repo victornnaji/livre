@@ -1,39 +1,18 @@
 import React from 'react'
 import styled from 'styled-components';
 import { media, mixin, theme } from 'styles';
-import { client } from '_helpers/client';
 import Spinner from 'assets/Spinner';
 import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
-import bookPlaceholderSvg from 'assets/PlaceHolder.svg';
 import Loading from 'components/Loading';
 import BookRow from 'components/BookRow';
-import {useQuery} from 'react-query';
-
-const loadingBook = {
-    title: 'Loading...',
-    author: 'loading...',
-    coverImageUrl: bookPlaceholderSvg,
-    publisher: 'Loading Publishing',
-    synopsis: 'Loading...',
-    loadingBook: true,
-  }
-  
-  const loadingBooks = Array.from({length: 10}, (v, index) => ({
-    id: `loading-book-${index}`,
-    ...loadingBook,
-  }))
+import { useBookSearch } from 'hooks/query-hooks';
 
 const Discover = ({user}) => {
     const [query, setQuery] = React.useState("");
     const [queried, setQueried] = React.useState(false);
 
-    const {data: books = loadingBooks, error, isLoading, isError, isSuccess} = useQuery({
-      queryKey: ['book-search', {query}],
-      queryFn: () => client(`books?query=${encodeURIComponent(query)}`, {
-        token: user.token,
-      }).then(data => data.books)
-    })
+    const {books, error, isLoading, isError, isSuccess} = useBookSearch(query, user)
 
     
     const handleSearchSubmit = (e) => {
@@ -218,7 +197,7 @@ const StyledDiscoverScreen = styled.div`
 
 `;
 
-const BookSearchResult = styled.div`   
+export const BookSearchResult = styled.div`   
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;

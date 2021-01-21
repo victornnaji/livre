@@ -79,8 +79,9 @@ const StyledBookRow = styled.div`
 
         img{
             max-width: 100%;
-            height: auto;
+            height: 100%;
             box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 8px 0px, rgba(0, 0, 0, 0.08) 0px 2px 4px 0px;
+            ${media.phablet`height: auto`};
         }
     }
 
