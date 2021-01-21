@@ -4,16 +4,22 @@ import { media, mixin, theme } from 'styles';
 import Spinner from 'assets/Spinner';
 import TopPicks from 'components/TopPicks';
 import Times from 'assets/Times';
-import Loading from 'components/Loading';
 import BookRow from 'components/BookRow';
-import { useBookSearch } from 'hooks/query-hooks';
+import {useQueryClient} from 'react-query';
+import { useBookSearch, refetchBookSearchQuery } from 'hooks/query-hooks';
 
 const Discover = ({user}) => {
     const [query, setQuery] = React.useState("");
     const [queried, setQueried] = React.useState(false);
+    const queryCache = useQueryClient();
 
     const {books, error, isLoading, isError, isSuccess} = useBookSearch(query, user)
 
+    React.useEffect(() => {
+     return () => {
+      refetchBookSearchQuery(queryCache, user);
+     }
+    }, [queryCache, user])
     
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -72,8 +78,8 @@ const Discover = ({user}) => {
                     Here, let me load a few books for you...
                   </p>
                   {isLoading ? (
-                    <div style={{ position: "relative" }}>
-                      <Loading />
+                    <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
+                      <Spinner />
                     </div>
                   ) : isSuccess && books.length ? (
                     <p className="initial-book-header">
@@ -89,8 +95,7 @@ const Discover = ({user}) => {
               )}
             </div>
 
-            {isSuccess ? (
-              books.length ? (
+            { books.length ? (
                 <BookSearchResult>
                   {books.map((book) => (
                     <div
@@ -104,7 +109,7 @@ const Discover = ({user}) => {
               ) : (
                 <p>No books found. Try another search.</p>
               )
-            ) : null}
+            }
           </div>
           <TopPicks user={user} />
         </StyledDiscoverScreen>

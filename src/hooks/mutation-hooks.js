@@ -1,41 +1,41 @@
 import { useMutation, useQueryClient } from "react-query";
 import { client } from "_helpers/client";
 
-function useUpdateListItem(user) {
+function useUpdateListItem(user, options) {
   const queryCache = useQueryClient();
-  const { mutateAsync } = useMutation(
+  const result = useMutation(
     (update) =>
       client(`list-items/${update.id}`, {
         method: "PUT",
         data: update,
         token: user.token,
       }),
-    { onSettled: () => queryCache.invalidateQueries("list-items") }
+    { onSettled: () => queryCache.invalidateQueries("list-items"), ...options }
   );
 
-  return { mutateAsync };
+  return result;
 }
 
-function useCreateListItem(user) {
+function useCreateListItem(user, options) {
   const queryCache = useQueryClient();
-  const { mutateAsync } = useMutation(
+  const result = useMutation(
     ({ bookId }) =>
       client(`list-items`, { data: { bookId }, token: user.token }),
-    { onSettled: () => queryCache.invalidateQueries("list-items") }
+    { onSettled: () => queryCache.invalidateQueries("list-items") ,...options}
   );
 
-  return { mutateAsync };
+  return result;
 }
 
-function useRemoveListItem(user) {
+function useRemoveListItem(user, options) {
   const queryCache = useQueryClient();
-  const { mutateAsync } = useMutation(
+  const result = useMutation(
     ({ id }) =>
       client(`list-items/${id}`, { method: "DELETE", token: user.token }),
-    { onSettled: () => queryCache.invalidateQueries("list-items") }
+      { onSettled: () => queryCache.invalidateQueries("list-items") ,...options}
   );
 
-  return { mutateAsync };
+  return result;
 }
 
 export {useUpdateListItem, useCreateListItem, useRemoveListItem};

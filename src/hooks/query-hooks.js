@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient} from "react-query";
 import { client } from "_helpers/client";
 import PlaceHolder from "assets/PlaceHolder.svg";
 
@@ -17,16 +17,24 @@ const loadingBooks = Array.from({ length: 10 }, (v, index) => ({
   ...loadingBook,
 }));
 
-function useBookSearch(query, user) {
-  const result = useQuery({
-    queryKey: ["book-search", { query }],
-    queryFn: () =>
+const getBookSearchConfig = (query, user, queryCache) => ({
+  queryKey: ["book-search", { query }],
+  queryFn: () =>
       client(`books?query=${encodeURIComponent(query)}`, {
         token: user.token,
-      }).then((data) => data.books),
-  });
+    }).then((data) => data.books),
+    onSuccess(books){
+      for(const book of books){
+        queryCache.setQueryData(['book', {bookId: book.id}], book)
+      }
+    }
+})
 
-  return { ...result, books: result.data ?? loadingBooks };
+function useBookSearch(query, user) {
+  const queryCache = useQueryClient();
+  const result = useQuery(getBookSearchConfig(query, user, queryCache));
+
+  return { ...result, books: result.data ? result.data : loadingBooks };
 }
 
 function useBook(bookId, user){
@@ -56,4 +64,10 @@ function useListItem(bookId, user){
 
     return listItem;
 }
-export { useBookSearch , useBook, useListItems, useListItem};
+
+async function refetchBookSearchQuery(queryCache, user){
+  queryCache.removeQueries('book-search');
+  await queryCache.prefetchQuery(getBookSearchConfig('', user, queryCache))
+
+}
+export { useBookSearch , useBook, useListItems, useListItem, refetchBookSearchQuery};

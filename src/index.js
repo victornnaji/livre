@@ -12,16 +12,28 @@ const {worker} = require('./test/server');
 worker.start();
 
 //query cache client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      useErrorBoundary: true,
+      refetchOnWindowFocus: false,
+      retry(failureCount, error) {
+        if (error.status === 404) return false
+        else if (failureCount < 2) return true
+        else return false
+      },
+    },
+  }
+});
 
 
 ReactDOM.render(
   <React.StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

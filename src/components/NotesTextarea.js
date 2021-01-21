@@ -3,10 +3,11 @@ import debounceFn from 'debounce-fn'
 import styled from 'styled-components'
 import { theme } from 'styles'
 import { useUpdateListItem } from 'hooks/mutation-hooks';
+import Spinner from 'assets/Spinner';
 
 const NotesTextarea = ({listItem, user}) => {
 
-  const {mutateAsync: mutate} = useUpdateListItem(user);
+  const {mutateAsync: mutate, isLoading, error, isError} = useUpdateListItem(user);
   
   const debouncedMutate = React.useMemo(() => debounceFn(mutate, {wait: 300}), [
     mutate,
@@ -20,7 +21,7 @@ const NotesTextarea = ({listItem, user}) => {
         <label
           htmlFor="notes"
           style={{
-            display: "inline-block",
+            display: "flex",
             marginRight: 10,
             marginTop: "0",
             marginBottom: "0.5rem",
@@ -28,7 +29,9 @@ const NotesTextarea = ({listItem, user}) => {
             fontSize: '1.5rem',
           }}
         >
-          Notes
+          Notes <span style={{marginLeft: "1rem"}}>{isLoading ?<Spinner /> : null}
+          {isError ? <div>{error}</div> : null}
+          </span>
         </label>
         <StyledTextArea id="notes"
         defaultValue={listItem.notes}

@@ -13,11 +13,11 @@ const StatusButton = ({user, book}) => {
   const colors = theme.colors;
   const listItem = useListItem(book.id, user);
 
-  const { mutateAsync: create } = useCreateListItem(user);
+  const { mutateAsync: create } = useCreateListItem(user, {throwOnError: true});
 
-  const { mutateAsync: remove } = useRemoveListItem(user);
+  const { mutateAsync: remove } = useRemoveListItem(user, {throwOnError: true});
 
-  const { mutateAsync: update } = useUpdateListItem(user);
+  const { mutateAsync: update } = useUpdateListItem(user, {throwOnError: true});
   return (
     <StyledStatusButton>
       {listItem ? (

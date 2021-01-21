@@ -12,6 +12,10 @@ import { useBook, useListItem} from 'hooks/query-hooks';
 
 const BookDetail = ({user}) => {
     let history = useHistory();
+    React.useLayoutEffect(() => {
+      window.scrollTo(0, 0);
+    }, [])
+    
     const { bookId } = useParams();
 
     const {book} = useBook(bookId, user);
