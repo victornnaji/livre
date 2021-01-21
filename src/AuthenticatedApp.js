@@ -11,6 +11,7 @@ import BookDetail from 'Pages/BookDetail';
 import NotFoundScreen from 'Pages/NotFoundScreen';
 import Finished from 'Pages/Finished';
 import {ErrorBoundary} from 'react-error-boundary'
+import { useAuth } from '_context/auth-context';
 
 
 
@@ -29,28 +30,27 @@ function ErrorFallback({error}) {
     )
   }
 
-const AuthenticatedApp= ({logout, user}) => {
-    
+const AuthenticatedApp= () => {
     return (
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <AnimatePresence initial={false}>
-            <Nav key="nav" logout={logout} user={user}/>
-            <SubNav key="subnav"/>
-                <DiscoverBookContainer>
-                    <ErrorBoundary FallbackComponent={ErrorFallback}>
-                        <Switch>
-                            <Route exact path="/">
-                                <Redirect to="/discover" />
-                            </Route>
-                            <Route path="/discover"><Discover key="discover-key" user={user}/> </Route>
-                            <Route path="/list"><List user={user}/> </Route>
-                            <Route path="/finished"><Finished user={user}/> </Route>
-                            <Route path="/book/:bookId"><BookDetail key="book-detail" user={user}/></Route>
-                            <Route exact path="*"><NotFoundScreen/></Route>
-                        </Switch>
-                    </ErrorBoundary>
-                </DiscoverBookContainer>
-        </AnimatePresence>
+            <AnimatePresence initial={false}>
+                <Nav key="nav" />
+                <SubNav key="subnav"/>
+                    <DiscoverBookContainer>
+                        <ErrorBoundary FallbackComponent={ErrorFallback}>
+                            <Switch>
+                                <Route exact path="/">
+                                    <Redirect to="/discover" />
+                                </Route>
+                                <Route path="/discover"><Discover /> </Route>
+                                <Route path="/list"><List /> </Route>
+                                <Route path="/finished"><Finished /> </Route>
+                                <Route path="/book/:bookId"><BookDetail/></Route>
+                                <Route exact path="*"><NotFoundScreen/></Route>
+                            </Switch>
+                        </ErrorBoundary>
+                    </DiscoverBookContainer>
+            </AnimatePresence>
         </ErrorBoundary>
     )
 }

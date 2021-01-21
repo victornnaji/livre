@@ -4,13 +4,12 @@ import {BookSearchResult} from 'Pages/Discover';
 import { useListItems } from 'hooks/query-hooks';
 
 const ListItemList = ({
-  user,
   filterListItems,
   noListItems,
   noFilteredListItems,
 }) => {
 
-   const listItems = useListItems(user);
+   const listItems = useListItems();
   
   const filteredListItems = listItems?.filter(filterListItems)
   
@@ -25,7 +24,7 @@ const ListItemList = ({
       <BookSearchResult>
         {filteredListItems.map(listItem => (
             <div className={`x ${filteredListItems.length < 3 ? "two-books" : null}`} key={listItem.id}>
-                <BookRow user={user} book={listItem.book} />
+                <BookRow book={listItem.book} />
             </div>
         ))}
       </BookSearchResult>

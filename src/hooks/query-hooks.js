@@ -1,6 +1,7 @@
+import React from 'react';
 import { useQuery, useQueryClient} from "react-query";
-import { client } from "_helpers/client";
 import PlaceHolder from "assets/PlaceHolder.svg";
+import { useClient } from "_context/auth-context";
 
 const loadingBook = {
   title: "Loading...",
@@ -17,12 +18,10 @@ const loadingBooks = Array.from({ length: 10 }, (v, index) => ({
   ...loadingBook,
 }));
 
-const getBookSearchConfig = (query, user, queryCache) => ({
+const getBookSearchConfig = (query, client, queryCache) => ({
   queryKey: ["book-search", { query }],
   queryFn: () =>
-      client(`books?query=${encodeURIComponent(query)}`, {
-        token: user.token,
-    }).then((data) => data.books),
+      client(`books?query=${encodeURIComponent(query)}`).then((data) => data.books),
     onSuccess(books){
       for(const book of books){
         queryCache.setQueryData(['book', {bookId: book.id}], book)
@@ -30,27 +29,30 @@ const getBookSearchConfig = (query, user, queryCache) => ({
     }
 })
 
-function useBookSearch(query, user) {
+function useBookSearch(query) {
   const queryCache = useQueryClient();
-  const result = useQuery(getBookSearchConfig(query, user, queryCache));
+  const client = useClient();
+  const result = useQuery(getBookSearchConfig(query, client, queryCache));
 
   return { ...result, books: result.data ? result.data : loadingBooks };
 }
 
-function useBook(bookId, user){
+function useBook(bookId){
+    const client = useClient();
     const result = useQuery({
         queryKey: ['book', {bookId}],
-        queryFn: () => client(`books/${bookId}`, {token: user.token}).then(data => data.book),
+        queryFn: () => client(`books/${bookId}`).then(data => data.book),
     });
 
     return {...result, book: result.data ?? loadingBook};
 }
 
-function useListItems(user){
+function useListItems(){
+    const client = useClient();
     const { data: listItems } = useQuery({
         queryKey: "list-items",
         queryFn: () =>
-          client(`list-items`, { token: user.token }).then(
+          client(`list-items`).then(
             (data) => data.listItems
           ),
     });
@@ -58,16 +60,21 @@ function useListItems(user){
     return listItems;
 }
 
-function useListItem(bookId, user){
-    const listItems = useListItems(user);
+function useListItem(bookId){
+    const listItems = useListItems();
     const listItem = listItems?.find(li => li.bookId === bookId) ?? null
 
     return listItem;
 }
 
-async function refetchBookSearchQuery(queryCache, user){
-  queryCache.removeQueries('book-search');
-  await queryCache.prefetchQuery(getBookSearchConfig('', user, queryCache))
-
+const useRefetchBookSearchQuery = () =>{
+  const client = useClient();
+  return React.useCallback(async function refetchBookSearchQuery(queryCache){
+    queryCache.removeQueries('book-search');
+    await queryCache.prefetchQuery(getBookSearchConfig('', client, queryCache))
+  
+  },[client])
 }
-export { useBookSearch , useBook, useListItems, useListItem, refetchBookSearchQuery};
+
+
+export { useBookSearch , useBook, useListItems, useListItem, useRefetchBookSearchQuery};

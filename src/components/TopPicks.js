@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme } from 'styles';
-import { client } from '_helpers/client';
 import {Link} from 'react-router-dom';
 import PlaceHolder from 'assets/PlaceHolder.svg';
 import {useQuery} from 'react-query';
+import { useClient } from '_context/auth-context';
 
 
 const loadingBook = {
@@ -17,10 +17,11 @@ const loadingBook = {
     loadingBook: true,
   }
 
-const TopPicks = ({user}) => {
+const TopPicks = () => {
+    const client = useClient();
     const {data, isError} = useQuery({
         queryKey: ['top-pick'],
-        queryFn: () => client(`books?query=`, {token: user.token}),
+        queryFn: () => client(`books?query=`),
     })
 
     var d = new Date();
@@ -28,22 +29,20 @@ const TopPicks = ({user}) => {
     const book = data ? data.books[n] : loadingBook;
 
     return (
-        <StyledToPicks>
-                <StyledTopPickBook 
-                aria-labelledby={book.id}
-                to={`/book/${book.id}`}>
-                    <div className="topPick-heading">Top Pick</div>
-                    <div className="image-column">
-                        <img src={book.coverImageUrl} alt=""/>
-                    </div>
-                    <div className="text-column">
-                        <div className="name">{book.title}</div>
-                        <div className="author">{book.author}</div>
-                    </div>
-                </StyledTopPickBook>
-            {isError ? (<div>error fetching book</div>) : null}
-        </StyledToPicks>
-    )
+      <StyledToPicks>
+        <StyledTopPickBook aria-labelledby={book.id} to={`/book/${book.id}`}>
+          <div className="topPick-heading">Top Pick</div>
+          <div className="image-column">
+            <img src={book.coverImageUrl} alt="" />
+          </div>
+          <div className="text-column">
+            <div className="name">{book.title}</div>
+            <div className="author">{book.author}</div>
+          </div>
+        </StyledTopPickBook>
+        {isError ? <div>error fetching book</div> : null}
+      </StyledToPicks>
+    );
 }
 
 const TopPicksMemo = React.memo(TopPicks);

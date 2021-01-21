@@ -5,9 +5,9 @@ import { theme } from 'styles'
 import { useUpdateListItem } from 'hooks/mutation-hooks';
 import Spinner from 'assets/Spinner';
 
-const NotesTextarea = ({listItem, user}) => {
+const NotesTextarea = ({listItem}) => {
 
-  const {mutateAsync: mutate, isLoading, error, isError} = useUpdateListItem(user);
+  const {mutateAsync: mutate, isLoading, error, isError} = useUpdateListItem();
   
   const debouncedMutate = React.useMemo(() => debounceFn(mutate, {wait: 300}), [
     mutate,
