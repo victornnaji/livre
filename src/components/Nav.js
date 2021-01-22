@@ -16,10 +16,8 @@ export const parentVariants = {
     },
 }
 
-
 const Nav = () => {
   const {user, logout} = useAuth();
-  const MotionNav = motion.custom(Link);
     return (
       <StyledNavBar>
         <motion.div
@@ -29,9 +27,9 @@ const Nav = () => {
           className="nav-contents"
           variants={parentVariants}
         >
-          <MotionNav to="/" className="logo" variants={theme.variants}>
+          <Link to="/" className="logo" aria-label="Logo">
             <Logo />
-          </MotionNav>
+          </Link>
 
           <motion.div 
           initial="initial"

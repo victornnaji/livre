@@ -4,11 +4,13 @@ import getUser from "_helpers/get-user";
 import * as auth from "_helpers/auth_provider";
 import Loading from "components/Loading";
 import { client } from "_helpers/client";
+import {useQueryClient} from 'react-query';
 
 const AuthContext = React.createContext();
 AuthContext.displayName = "AuthContext";
 
 const AuthProvider = (props) => {
+  const queryCache = useQueryClient();
   const {
     data: user,
     error,
@@ -21,12 +23,15 @@ const AuthProvider = (props) => {
     status
   } = useAsync();
 
-  const login = (form) => auth.login(form).then((u) => setData(u));
-  const register = (form) => auth.register(form).then((u) => setData(u));
-  const logout = () => {
+  const login = React.useCallback((form) => auth.login(form).then((u) => setData(u)), [setData]);
+  const register = React.useCallback((form) => auth.register(form).then((u) => setData(u)), [setData]);
+  const logout = React.useCallback(() => {
     auth.logout();
     setData(null);
-  };
+    queryCache.clear();
+  }, [queryCache, setData]);
+
+  const value = React.useMemo(() => ({login, logout, register, user}), [login, logout, register, user])
 
   React.useEffect(() => {
     run(getUser());
@@ -46,7 +51,6 @@ const AuthProvider = (props) => {
   }
 
   if(isSuccess){
-      const value = {login, logout, register, user};
       return <AuthContext.Provider value={value} {...props} />
   }
 

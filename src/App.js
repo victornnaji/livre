@@ -1,11 +1,18 @@
 import React from 'react'
-import AuthenticatedApp from './AuthenticatedApp'
-import UnAuthenticatedApp from './UnAuthenticatedApp'
 import { useAuth } from '_context/auth-context'
+import Loading from 'components/Loading'
+
+const AuthenticatedApp = React.lazy(() => import(/* webpackPrefetch: true */'./AuthenticatedApp') )
+const UnAuthenticatedApp = React.lazy(() => import('./UnAuthenticatedApp') )
 
 const App = () => {
   const { user } = useAuth();
-  return user ? <AuthenticatedApp /> : <UnAuthenticatedApp />
+  return (
+    <React.Suspense fallback={<Loading />}>
+      {user ? <AuthenticatedApp /> : <UnAuthenticatedApp />}
+    </React.Suspense>
+  )
+  
 };
 
 export default App

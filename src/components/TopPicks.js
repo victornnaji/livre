@@ -30,7 +30,7 @@ const TopPicks = () => {
 
     return (
       <StyledToPicks>
-        <StyledTopPickBook aria-labelledby={book.id} to={`/book/${book.id}`}>
+        <StyledTopPickBook aria-label={book.id} to={`/book/${book.id}`}>
           <div className="topPick-heading">Top Pick</div>
           <div className="image-column">
             <img src={book.coverImageUrl} alt="" />

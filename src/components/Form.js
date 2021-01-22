@@ -69,16 +69,19 @@ const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
             >
               <motion.h2 variants={buttonVariants} className="auth-heading">{register ? "Sign up" : "Log in"}</motion.h2>
               <motion.div variants={buttonVariants}>
-                <StyledFormikField name="username" />
+                <StyledFormikField name="username" id="username" placeholder="Username" aria-label="username"/>
               </motion.div>
               {errors.username && touched.username ? (
                 <div className="field-error">{errors.username}</div>
               ) : null}
               <motion.div variants={buttonVariants}>
                 <StyledFormikField
+                  id="password"
                   name="password"
                   type="password"
                   className="password"
+                  placeholder="Password"
+                  aria-label="password"
                 />
               </motion.div>
               {errors.password && touched.password ? (
@@ -147,7 +150,7 @@ const StyledFormikForm = styled(Form)`
       text-align: right;
 
       span{
-        color: ${theme.colors.tertiary};
+        border-bottom: 1px solid ${theme.colors.darkTertiary};
         cursor: pointer;
         font-weight: 700;
         text-transform: capitalize;
