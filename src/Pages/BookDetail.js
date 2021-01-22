@@ -39,7 +39,7 @@ const BookDetail = () => {
         </div>
         <div className="column text-column">
           <div className="text-container">
-            <div className="title-row">{title}</div>
+            <h2 className="title-row">{title}</h2>
             <div className="author-row">
               <div className="author">{author}</div>
               {listItem?.finishDate ? (

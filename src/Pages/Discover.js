@@ -72,9 +72,9 @@ const Discover = () => {
             <div>
               {queried ? null : (
                 <div>
-                  <p className="initial-book-header">
+                  <h1 className="initial-book-header">
                     Welcome to the discover page.
-                  </p>
+                  </h1>
                   <p className="initial-book-header">
                     Here, let me load a few books for you...
                   </p>
@@ -195,9 +195,9 @@ const StyledDiscoverScreen = styled.div`
           text-align: center;
           margin-bottom: 2rem;
 
-          &:last-of-type{
+          /* &:last-of-type{
             margin-bottom: 5rem;
-          };
+          }; */
 
         }
 

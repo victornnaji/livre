@@ -10,11 +10,11 @@ const BookRow = ({book}) => {
     const { title, author, coverImageUrl } = book;
     const listItem = useListItem(book.id);
 
-    const id = `book-row-book-${book.id}`;
+    const id = `${book.title}`;
 
     return (
       <StyledBookRow>
-        <BookRowLink aria-labelledby={id} to={`/book/${book.id}`}>
+        <BookRowLink aria-label={id} to={`/book/${book.id}`}>
           <div className="book-side">
             <img src={coverImageUrl} alt={`${title} book cover`} />
           </div>
