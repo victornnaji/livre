@@ -98,7 +98,7 @@ const AuthForm = ({onSubmit, buttonText, register, registerClick}) => {
               {isError ? (
                 <div style={{fontSize: '1.4rem'}} className="field-error">{error.message}</div>
               ) : null}
-              <motion.div variants={buttonVariants} className="auth-redirect">{register ? (<p>Already a user? <span onClick={registerClick}>Login now</span></p>): (<p>don't have an account? <span onClick={registerClick}>join now.</span></p>)}</motion.div>
+              <motion.div variants={buttonVariants} className="auth-redirect">{register ? (<p>Already a user? <span role="button" onClick={registerClick}>Login now</span></p>): (<p>don't have an account? <span onClick={registerClick} role="button">join now.</span></p>)}</motion.div>
             </motion.div>
           </StyledFormikForm>
         )}
