@@ -1,6 +1,8 @@
 import * as auth from '_helpers/auth_provider';
-import {useQueryClient} from 'react-query';
+import {QueryClient} from 'react-query';
 const apiURL = process.env.REACT_APP_API_URL
+
+const queryClient = new QueryClient()
 
 function client(
   endpoint,
@@ -19,10 +21,10 @@ function client(
 
   return window.fetch(`${apiURL}/${endpoint}`, config).then(async response => {
     if (response.status === 401) {
-      await auth.logout()
+      await auth.logout();
+      queryClient.clear();
       // refresh the page for them
       window.location.assign(window.location)
-      useQueryClient().clear();
       return Promise.reject({message: 'Please re-authenticate.'})
     }
     const data = await response.json()
