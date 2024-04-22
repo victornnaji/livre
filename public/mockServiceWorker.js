@@ -21,6 +21,12 @@ self.addEventListener("activate", async function (event) {
 });
 
 self.addEventListener("message", async function (event) {
+  const allowedOrigins = ["http://localhost:3000"];
+
+  if (!event.origin || !allowedOrigins.includes(event.origin)) {
+    console.error(`Received message from disallowed origin: ${event.origin}`);
+    return;
+  }
   const clientId = event.source.id;
   const client = await event.currentTarget.clients.get(clientId);
   const allClients = await self.clients.matchAll();
