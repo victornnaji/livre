@@ -26,9 +26,9 @@ const BookDetail = () => {
 
     return (
       <StyledBookDetail>
-        <div onClick={history.goBack} className="back-button">
+        <button onClick={history.goBack} className="back-button">
           ← Back
-        </div>
+        </button>
         <div className="column image-column">
           <img
             className="image"

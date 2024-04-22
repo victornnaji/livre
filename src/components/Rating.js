@@ -90,7 +90,7 @@ function Rating({listItem}) {
     )
   })
   return (
-    <div
+    <button
       onClick={e => e.stopPropagation()}
       className={rootClassName}
       css={{
@@ -102,7 +102,7 @@ function Rating({listItem}) {
       }}
     >
       <span css={{display: 'flex'}}>{stars}</span>
-    </div>
+    </button>
   )
 }
 
